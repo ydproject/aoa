@@ -1,0 +1,221 @@
+# -*- coding: utf-8 -*-
+from PyQt4 import QtCore, QtGui
+import sys
+from util import *
+import traceback
+
+
+class EditMoney(QtGui.QWidget):
+
+    def __init__(self, object=None, stu_id=""):
+        super(EditMoney, self).__init__()
+        self.faWindow = object
+        frame = QtGui.QFrame(self)
+        self.stu_id = stu_id
+
+        self.data = Sql("stu_money_info").select({u"学号": stu_id})[0]
+        self.old_value = sum(map(str_to_sum, self.data[1:]))
+
+        #编辑控件
+        font = QtGui.QFont()
+        font.setFamily("Aharoni")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.student_info = read_file("stu_money_info.txt")
+        self.label_list = []
+        self.value_list = []
+        self.money_list = []
+        i = 0
+        for item_info, item_value in self.student_info:
+            if item_value[0] == "":
+                i = i + 1
+                continue
+            label = QtGui.QLabel(item_info)
+            self.label_list.append(label)
+            if len(item_value) == 0 or len(item_value[0]) == 0:
+                money = 0
+            else:
+                try:
+                    money = int(item_value[0])
+                except Exception, e:
+                    print traceback.format_exc()
+                    money = 0
+            self.money_list.append(money)
+            if len(item_value) <= 1:
+                chkBoxItem = QtGui.QCheckBox(u"全部")
+                if self.data[i] != "0":
+                    chkBoxItem.setCheckState(QtCore.Qt.Checked)
+                    chkBoxItem.setDisabled(True)
+                else:
+                    chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
+                self.value_list.append(chkBoxItem)
+            else:
+                chkBoxItem_list = []
+                j = 0
+                data_j = self.data[i].split(",")
+                for item in item_value[1:]:
+                    chkBoxItem = QtGui.QCheckBox(item)
+                    if data_j[j] != "0":
+                        chkBoxItem.setCheckState(QtCore.Qt.Checked)
+                        chkBoxItem.setDisabled(True)
+                    else:
+                        chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
+                    chkBoxItem_list.append(chkBoxItem)
+                    j = j + 1
+                self.value_list.append(chkBoxItem_list)
+            i = i + 1
+
+        pushButton_1 = QtGui.QPushButton(frame)
+        pushButton_1.setGeometry(QtCore.QRect(120, 360, 71, 31))
+        font2 = QtGui.QFont()
+        font2.setPointSize(10)
+        pushButton_1.setFont(font2)
+        pushButton_1.setText(u'确定添加')
+        pushButton_2 = QtGui.QPushButton(frame)
+        pushButton_2.setGeometry(QtCore.QRect(390, 360, 75, 31))
+        # pushButton_2.setFont(font2)
+        pushButton_2.setText(u'清空信息')
+        QtCore.QObject.connect(pushButton_1, QtCore.SIGNAL("clicked()"), self.confirm)
+        QtCore.QObject.connect(pushButton_2, QtCore.SIGNAL("clicked()"), self.clears)
+
+        #布局
+        vlayout = QtGui.QVBoxLayout()
+        vlayout.setAlignment(QtCore.Qt.AlignTop)
+        grid1 = QtGui.QGridLayout()
+        grid1.setAlignment(QtCore.Qt.AlignBottom)
+        grid1.setSpacing(20)
+        number = 12
+        x = 1
+        label0 = QtGui.QLabel(u"学号")
+        self.lineEdit0 = QtGui.QLineEdit()
+        if self.stu_id != "":
+            self.lineEdit0.setText(self.stu_id)
+            self.lineEdit0.setDisabled(True)
+        grid1.addWidget(label0, x, 0)
+        grid1.addWidget(self.lineEdit0, x, 1, 1, 2)
+        for index in range(2, number):
+            label = QtGui.QLabel(" ")
+            grid1.addWidget(label, x, index)
+
+        x = 2
+        label1 = QtGui.QLabel(u"学期")
+        self.lineEdit1 = QtGui.QLineEdit()
+        self.lineEdit1.setText(get_term())
+        self.lineEdit1.setDisabled(True)
+        grid1.addWidget(label1, x, 0)
+        grid1.addWidget(self.lineEdit1, x, 1, 1, 2)
+        for index in range(2, number):
+            label = QtGui.QLabel(" ")
+            grid1.addWidget(label, x, index)
+
+        i = 0
+        for label in self.label_list:
+            x = x + 1
+            grid1.addWidget(label, x, 0)
+            y = 1
+            if isinstance(self.value_list[i], list):
+                for value in self.value_list[i]:
+                    grid1.addWidget(value, x, y)
+                    y = y + 1
+            else:
+                grid1.addWidget(self.value_list[i], x, y)
+            for index in range(y+1, number):
+                label = QtGui.QLabel(" ")
+                grid1.addWidget(label, x, index)
+            i = i + 1
+
+        vlayout.addLayout(grid1)
+        vlayout.setSpacing(40)
+
+        grid2 = QtGui.QGridLayout()
+        grid2.setAlignment(QtCore.Qt.AlignLeft)
+        grid2.setSpacing(80)
+        grid2.addWidget(pushButton_1, 1, 1)
+        grid2.addWidget(pushButton_2, 1, 3)
+
+        vlayout.addLayout(grid2)
+
+        self.setLayout(vlayout)
+        self.setWindowTitle(u'添加学生学籍信息')
+        self.resize(335, 549)
+        self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
+
+    def clears(self):
+        self.reset()
+
+    def confirm(self):
+        if not Sql().check_stu_id_exist(self.lineEdit0.text()):
+            showWarnDialog(self, u"学号不存在！")
+            return 1
+        values = [self.lineEdit0.text(), self.lineEdit1.text()]
+        for i in range(0, len(self.label_list)):
+            if not isinstance(self.value_list[i], list):
+                if self.value_list[i].checkState() == QtCore.Qt.Checked:
+                    value = str(self.money_list[i])
+                else:
+                    value = "0"
+            else:
+                value = []
+                for item in self.value_list[i]:
+                    if item.checkState() == QtCore.Qt.Checked:
+                        value.append(str(self.money_list[i]))
+                    else:
+                        value.append("0")
+                value = ",".join(value)
+            values.append(value)
+        total = sum(map(str_to_sum, values[2:]))
+        spend = total - self.old_value
+        ask_info = showComfirmDialog(self, u"合计：%8.2f 元，确认缴费？" % spend)
+        if ask_info == 1:
+            return 1
+
+        status = Sql("stu_money_info").update(list(self.data), values)
+        if status == 1:
+            showWarnDialog(self, u"缴费失败！")
+            self.reset()
+        else:
+            showMessageDialog(self, u"缴费成功！")
+            self.faWindow.sels()
+            self.close()
+        return 0
+
+    def reset(self):
+        i = 1
+        for items in self.value_list:
+            if isinstance(items, list):
+                j = 0
+                data = self.data[i].split(",")
+                for item in items:
+                    if data[j] != "0":
+                        pass
+                    else:
+                        item.setCheckState(QtCore.Qt.Unchecked)
+                    j = j + 1
+            else:
+                if self.data[i] != "0":
+                    pass
+                else:
+                    items.setCheckState(QtCore.Qt.Unchecked)
+            i = i + 1
+
+
+def main(object=None, stu_id=""):
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+    MainWindow_1 = EditMoney(object, stu_id)
+    palette = QtGui.QPalette()
+    palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("icon/bkg5.jpg")))
+    MainWindow_1.setPalette(palette)
+    return MainWindow_1
+
+if __name__=="__main__":
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+    app1 = QtGui.QApplication(sys.argv)
+    MainWindow_1 = EditMoney("20180007")
+    palette = QtGui.QPalette()
+    palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("icon/bkg5.jpg")))
+    MainWindow_1.setPalette(palette)
+    MainWindow_1.show()
+    sys.exit(app1.exec_())

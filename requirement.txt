@@ -1,0 +1,5 @@
+# -*- coding: utf-8 -*-
+1.Guest、Worker、Admin 权限控制
+2.新增用户，切换用户
+3.编辑缴费功能
+4.selectmoney里面作多表的联合查询
