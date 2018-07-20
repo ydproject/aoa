@@ -93,14 +93,14 @@ class ChangeUser(QtGui.QWidget):
                 values.append(str(item.currentText()))
             i = i + 1
 
-        ask_info = showComfirmDialog(self, u"是否使用该用户？")
-        if ask_info == 1:
-            return 1
+        # ask_info = showComfirmDialog(self, u"是否使用该用户？")
+        # if ask_info == 1:
+        #     return 1
         status = swith_user(self.value_list[0].text(), self.value_list[1].text())
         if status == 1:
             showWarnDialog(self, u"该用户名密码不正确！")
         else:
-            showMessageDialog(self, u"切换用户为:%s！" % status)
+            # showMessageDialog(self, u"切换用户为:%s！" % status)
             self.close()
             self.faWindows.initUI()
         return 0

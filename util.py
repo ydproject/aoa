@@ -2,7 +2,7 @@
 
 import sqlite3
 import os
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 import time, datetime
 import traceback
 
@@ -74,6 +74,14 @@ def str_to_sum(str):
     except Exception,e:
         print traceback.format_exc()
         return 0
+
+def flag_to_str(f_list):
+    if len(f_list) == 0:
+        return ""
+    if len(f_list) == 1:
+        return f_list[0]
+    str_list = [f_list[0]] * (len(f_list) - 1)
+    return ",".join(str_list)
 
 
 def read_file(filename):
@@ -274,19 +282,66 @@ class Sql():
         return status
 
 
-def select_money_by_stu(value_list="*", dict1={}, dict2={}):
+def select_premoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
+    sql = Sql(u"stu_base_info")
+    sql = Sql(u"stu_money_pre")
     sql = Sql()
-    sql_info = u"select %s from stu_base_info, stu_money_info where stu_base_info.学号=stu_money_info.学号" % value_list
-    select_list = []
-    if len(dict1) != 0:
-        for i in dict1:
-            select_list.append(u"stu_base_info.%s=%s" % (i, dict1[i]))
-    if len(dict2) != 0:
-        for i in dict2:
-            select_list.append(u"stu_money_info.%s=%s" % (i, dict2[i]))
-    sql_info = sql_info + " and " + " and ".join(select_list)
-    print sql_info
+    print value_list1, value_list2, dict1, dict2
+    if len(value_list1) == 0 and len(value_list2) == 0:
+        label_str = "*"
+    else:
+        value_list1 = [u"stu_base_info." + i for i in value_list1]
+        value_list2 = [u"stu_money_pre." + i for i in value_list2]
+        label_str = u",".join(value_list1 + value_list2)
+
+    sql_info = u"select %s from stu_base_info, stu_money_pre where stu_base_info.学号=stu_money_pre.学号" % label_str
+    if len(dict1) != 0 or len(dict2) != 0:
+        select_list = []
+        if len(dict1) != 0:
+            for i in dict1:
+                select_list.append(u"stu_base_info.%s='%s'" % (i, dict1[i]))
+        if len(dict2) != 0:
+            for i in dict2:
+                if dict2[i] == u'-1':
+                    select_list.append(u"stu_money_pre.%s!='0'" % i)
+                elif dict2[i] == u'0':
+                    select_list.append(u"stu_money_pre.%s='0'" % i)
+                else:
+                    select_list.append(u"stu_money_pre.%s='%s'" % (i, dict2[i]))
+        sql_info = sql_info + " and " + " and ".join(select_list)
     return sql.select_uni(sql_info)
+
+
+def select_money_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
+    sql = Sql(u"stu_base_info")
+    sql = Sql(u"stu_money_info")
+    sql = Sql()
+    if len(value_list1) == 0 and len(value_list2) == 0:
+        label_str = "*"
+    else:
+        value_list1 = [u"stu_base_info." + i for i in value_list1]
+        value_list2 = [u"stu_money_info." + i for i in value_list2]
+        label_str = u",".join(value_list1 + value_list2)
+
+    sql_info = u"select %s from stu_base_info, stu_money_info where stu_base_info.学号=stu_money_info.学号" % label_str
+    if len(dict1) != 0 or len(dict2) != 0:
+        select_list = []
+        if len(dict1) != 0:
+            for i in dict1:
+                select_list.append(u"stu_base_info.%s='%s'" % (i, dict1[i]))
+        money_infos = read_file("stu_money_info.txt")
+        money_infos = {i:flag_to_str(j) for i, j in money_infos}
+        if len(dict2) != 0:
+            for i in dict2:
+                if dict2[i] == u'-1':
+                    select_list.append(u"stu_money_info.%s='%s'" % (i, money_infos[i]))
+                elif dict2[i] == u'0':
+                    select_list.append(u"stu_money_info.%s!='%s'" % (i, money_infos[i]))
+                else:
+                    select_list.append(u"stu_money_info.%s='%s'" % (i, dict2[i]))
+        sql_info = sql_info + " and " + " and ".join(select_list)
+    return sql.select_uni(sql_info)
+
 
 if __name__ == '__main__':
     # showInputDialog()
@@ -297,4 +352,4 @@ if __name__ == '__main__':
     # print test.cur.description
     # # test.conn.commit()
     # test.close()
-    print select_money_by_stu(dict1={u"学号": u"20180004"}, dict2={u"学费": u"1200"})
+    print select_money_by_stu(value_list1=[u"学号"], value_list2=[u"生活费"], dict1={u"学号": u"20180007"}, dict2={u"生活费": "0"})

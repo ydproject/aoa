@@ -6,7 +6,6 @@
 import sys
 from PyQt4 import QtGui, QtCore
 from util import *
-import addmoney, editbymoney, editmoney
 
 
 class SelectMoney(QtGui.QWidget):
@@ -24,7 +23,7 @@ class SelectMoney(QtGui.QWidget):
         self.money_list = [item for item, item_value in self.money_infos]
         # 表格控件
         self.tablelist = [u''] + self.flag_list + self.money_list[1:]
-        stuInfo = Sql().select_by_list(self.flag_list, {})
+        stuInfo = select_money_by_stu(self.flag_list, self.money_list[1:])
         self.currentTable = stuInfo
         self.tableWidget = QtGui.QTableWidget(self)
         self.tableWidget.setRowCount(len(stuInfo))
@@ -41,53 +40,35 @@ class SelectMoney(QtGui.QWidget):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
                 self.tableWidget.setItem(i, col + 1, item)
-
-            money_info = Sql("stu_money_info").select_by_list(self.money_list[1:], {u"学号": row[0], u"学期": get_term()})
-            if len(money_info) != 0:
-                for j in range(0, len(money_info[0])):
-                    vj = money_info[0][j]
-                    item = QtGui.QTableWidgetItem(vj)
-                    self.tableWidget.setItem(i, col + j + 2, item)
             i = i + 1
 
         #编辑框控件
-        self.label_list = []
-        self.value_list = []
-        for items, items_value in self.select_infos + self.money_infos[1:]:
-            if str(items_value[0]) != "0":
-                label = QtGui.QLabel(items)
-                self.label_list.append(label)
-                edits = QtGui.QLineEdit()
-                self.value_list.append(edits)
+        self.label_list_stu = []
+        self.value_list_stu = []
+        self.label_list_money = []
+        self.value_list_money = []
+        for items, items_value in self.select_infos:
+            label = QtGui.QLabel(items)
+            self.label_list_stu.append(label)
+            edits = QtGui.QLineEdit()
+            self.value_list_stu.append(edits)
+
+        for items, items_value in self.money_infos[1:]:
+            label = QtGui.QLabel(items)
+            self.label_list_money.append(label)
+            edits = QtGui.QLineEdit()
+            self.value_list_money.append(edits)
 
         # 按钮控件
         selectButton = QtGui.QPushButton(frame)
         selectButton.setText(u'查询')
         QtCore.QObject.connect(selectButton, QtCore.SIGNAL("clicked()"), self.sels)
 
-        editButton = QtGui.QPushButton(frame)
-        editButton.setText(u'编辑')
-        QtCore.QObject.connect(editButton, QtCore.SIGNAL("clicked()"), self.editmoney)
-        if query_current_user()[2] != "Admin":
-            editButton.setDisabled(True)
-        else:
-            editButton.setDisabled(False)
 
         modifyButton = QtGui.QPushButton(frame)
-        modifyButton.setText(u'缴费')
+        modifyButton.setText(u'统计')
         QtCore.QObject.connect(modifyButton, QtCore.SIGNAL("clicked()"), self.edits)
-        if query_current_user()[2] == "Guest":
-            modifyButton.setDisabled(True)
-        else:
-            modifyButton.setDisabled(False)
 
-        deleteButton = QtGui.QPushButton(frame)
-        deleteButton.setText(u'删除')
-        QtCore.QObject.connect(deleteButton, QtCore.SIGNAL("clicked()"), self.dels)
-        if query_current_user()[2] != "Admin":
-            deleteButton.setDisabled(True)
-        else:
-            deleteButton.setDisabled(False)
 
         clearButton = QtGui.QPushButton(frame)
         clearButton.setText(u'清空')
@@ -100,9 +81,21 @@ class SelectMoney(QtGui.QWidget):
         i = 0
         x = 1
         y = 0
-        while i < len(self.label_list):
-            grid1.addWidget(self.label_list[i], x, y)
-            grid1.addWidget(self.value_list[i], x, y + 1)
+        while i < len(self.label_list_stu):
+            grid1.addWidget(self.label_list_stu[i], x, y)
+            grid1.addWidget(self.value_list_stu[i], x, y + 1)
+            i = i + 1
+            if i % 4 == 0:
+                x = x + 1
+                y = 0
+            else:
+                y = y + 2
+
+        i = 0
+        x = x + 1
+        while i < len(self.label_list_money):
+            grid1.addWidget(self.label_list_money[i], x, y)
+            grid1.addWidget(self.value_list_money[i], x, y + 1)
             i = i + 1
             if i % 4 == 0:
                 x = x + 1
@@ -115,8 +108,6 @@ class SelectMoney(QtGui.QWidget):
         grid2.addWidget(selectButton, 1, 0)
         grid2.addWidget(clearButton, 1, 1)
         grid2.addWidget(modifyButton, 1, 2)
-        grid2.addWidget(deleteButton, 1, 3)
-        grid2.addWidget(editButton, 1, 4)
 
 
         grid3 = QtGui.QGridLayout()
@@ -130,8 +121,8 @@ class SelectMoney(QtGui.QWidget):
 
         self.setLayout(vlayout)
 
-        self.resize(1000, 1000)
-        self.setWindowTitle(u'查询学籍信息')
+        self.resize(1200, 1000)
+        self.setWindowTitle(u'查询缴费信息')
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
 
     def refresh_table(self, stuInfo):
@@ -150,92 +141,37 @@ class SelectMoney(QtGui.QWidget):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
                 self.tableWidget.setItem(i, col + 1, item)
-            money_info = Sql("stu_money_info").select_by_list(self.money_list[1:], {u"学号":row[0]})
-            if len(money_info) != 0:
-                for j in range(0, len(money_info[0])):
-                    vj = money_info[0][j]
-                    item = QtGui.QTableWidgetItem(vj)
-                    self.tableWidget.setItem(i, col + j + 2, item)
             i = i + 1
 
     def sels(self):
         i = 0
-        sel_dict = {}
-        while i < len(self.label_list):
-            if len(self.value_list[i].text()) != 0:
-                sel_dict[self.label_list[i].text()] = self.value_list[i].text()
+        dict1 = {}
+        while i < len(self.label_list_stu):
+            if len(self.value_list_stu[i].text()) != 0:
+                dict1[unicode(self.label_list_stu[i].text())] = unicode(self.value_list_stu[i].text())
             i = i + 1
-
-        stuInfo = Sql().select_by_list(self.flag_list, sel_dict)
+        dict2 = {}
+        i = 0
+        while i < len(self.label_list_money):
+            if len(self.value_list_money[i].text()) != 0:
+                dict2[unicode(self.label_list_money[i].text())] = unicode(self.value_list_money[i].text())
+            i = i + 1
+        stuInfo = select_money_by_stu(self.flag_list, self.money_list[1:], dict1, dict2)
         self.currentTable = stuInfo
         self.refresh_table(stuInfo)
 
-    def editmoney(self):
-        i = 0
-        stu_info_list = []
-        while i < len(self.currentTable):
-            if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
-                stu_info_list.append(self.currentTable[i])
-            i = i + 1
-        if len(stu_info_list) == 0:
-            return 0
-        if len(stu_info_list) > 1:
-            showWarnDialog(self, u"只能选择一条记录！")
-            return 1
-        money_info = Sql("stu_money_info").select({u"学号": stu_info_list[0][0]})
-        if len(money_info) == 0:
-            self.editmoney = addmoney.main(self, stu_info_list[0][0])
-            self.editmoney.show()
-        else:
-            self.editmoney = editbymoney.main(self, stu_info_list[0][0])
-            self.editmoney.show()
 
     def edits(self):
-        i = 0
-        stu_info_list = []
-        while i < len(self.currentTable):
-            if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
-                stu_info_list.append(self.currentTable[i])
-            i = i + 1
-        if len(stu_info_list) == 0:
-            return 0
-        if len(stu_info_list) > 1:
-            showWarnDialog(self, u"只能选择一条记录！")
-            return 1
-        money_info = Sql("stu_money_info").select({u"学号": stu_info_list[0][0]})
-        if len(money_info) == 0:
-            self.editmoney = addmoney.main(self, stu_info_list[0][0])
-            self.editmoney.show()
-        else:
-            self.editmoney = editmoney.main(self, stu_info_list[0][0])
-            self.editmoney.show()
+        pass
 
     def clears(self):
-        for value in self.value_list:
+        for value in self.value_list_stu:
+            if not isinstance(value, QtGui.QComboBox):
+                value.clear()
+        for value in self.value_list_money:
             if not isinstance(value, QtGui.QComboBox):
                 value.clear()
         self.sels()
-
-    def dels(self):
-        i = 0
-        stu_id_list = []
-        ask_ok = showComfirmDialog(self, u"是否删除学生信息？")
-        if ask_ok == 1:
-            return 1
-        while i < len(self.currentTable):
-            if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
-                stu_id = self.currentTable[i][0]
-                status = Sql("stu_money_info").delete(stu_id)
-                if status == 1:
-                    stu_id_list.append(stu_id)
-            i = i + 1
-        if len(stu_id_list) == 0:
-            showMessageDialog(self, u"删除学生信息成功！")
-        else:
-            showWarnDialog(self, u"删除学生信息(%s)失败！" % ",".join(stu_id_list))
-
-        self.sels()
-        return 0
 
 
 def main():
