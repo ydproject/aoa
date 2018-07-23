@@ -5,16 +5,13 @@ from util import *
 import traceback
 
 
-class EditByMoney(QtGui.QWidget):
+class EditPreMoney(QtGui.QWidget):
 
     def __init__(self, object=None, stu_id=""):
-        super(EditByMoney, self).__init__()
+        super(EditPreMoney, self).__init__()
         self.faWindow = object
         frame = QtGui.QFrame(self)
         self.stu_id = stu_id
-
-        self.data = Sql("stu_money_info").select({u"学号": stu_id})[0]
-        self.old_value = sum(map(str_to_sum, self.data[2:]))
 
         #编辑控件
         font = QtGui.QFont()
@@ -22,49 +19,24 @@ class EditByMoney(QtGui.QWidget):
         font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
-        self.student_info = read_file("stu_money_info.txt")
+        self.student_info = read_file("stu_money_pre.txt")
         self.label_list = []
         self.value_list = []
         self.money_list = []
-        i = 0
         for item_info, item_value in self.student_info:
             if item_value[0] == "":
-                i = i + 1
                 continue
             label = QtGui.QLabel(item_info)
+            # label.setFont(font)
             self.label_list.append(label)
-            if len(item_value) == 0 or len(item_value[0]) == 0:
-                money = 0
+            # self.null_list.append(str(item_value[0]))
+            if str(item_value[0]) == "0" or str(item_value[0]) == "1":
+                lineEdit = QtGui.QLineEdit()
             else:
-                try:
-                    money = int(item_value[0])
-                except Exception, e:
-                    print traceback.format_exc()
-                    money = 0
-            self.money_list.append(money)
-            if len(item_value) <= 1:
-                chkBoxItem = QtGui.QCheckBox(u"全部")
-                if self.data[i] != "0":
-                    chkBoxItem.setCheckState(QtCore.Qt.Checked)
-                    # chkBoxItem.setDisabled(True)
-                else:
-                    chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
-                self.value_list.append(chkBoxItem)
-            else:
-                chkBoxItem_list = []
-                j = 0
-                data_j = self.data[i].split(",")
-                for item in item_value[1:]:
-                    chkBoxItem = QtGui.QCheckBox(item)
-                    if data_j[j] != "0":
-                        chkBoxItem.setCheckState(QtCore.Qt.Checked)
-                        # chkBoxItem.setDisabled(True)
-                    else:
-                        chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
-                    chkBoxItem_list.append(chkBoxItem)
-                    j = j + 1
-                self.value_list.append(chkBoxItem_list)
-            i = i + 1
+                lineEdit = QtGui.QComboBox()
+                for item in item_value:
+                    lineEdit.addItem(item)
+            self.value_list.append(lineEdit)
 
         pushButton_1 = QtGui.QPushButton(frame)
         pushButton_1.setGeometry(QtCore.QRect(120, 360, 71, 31))
@@ -85,7 +57,7 @@ class EditByMoney(QtGui.QWidget):
         grid1 = QtGui.QGridLayout()
         grid1.setAlignment(QtCore.Qt.AlignBottom)
         grid1.setSpacing(20)
-        number = 12
+        number = 5
         x = 1
         label0 = QtGui.QLabel(u"学号")
         self.lineEdit0 = QtGui.QLineEdit()
@@ -98,29 +70,12 @@ class EditByMoney(QtGui.QWidget):
             label = QtGui.QLabel(" ")
             grid1.addWidget(label, x, index)
 
-        x = 2
-        label1 = QtGui.QLabel(u"学期")
-        self.lineEdit1 = QtGui.QLineEdit()
-        self.lineEdit1.setText(get_term())
-        self.lineEdit1.setDisabled(True)
-        grid1.addWidget(label1, x, 0)
-        grid1.addWidget(self.lineEdit1, x, 1, 1, 2)
-        for index in range(2, number):
-            label = QtGui.QLabel(" ")
-            grid1.addWidget(label, x, index)
-
         i = 0
         for label in self.label_list:
             x = x + 1
             grid1.addWidget(label, x, 0)
-            y = 1
-            if isinstance(self.value_list[i], list):
-                for value in self.value_list[i]:
-                    grid1.addWidget(value, x, y)
-                    y = y + 1
-            else:
-                grid1.addWidget(self.value_list[i], x, y)
-            for index in range(y+1, number):
+            grid1.addWidget(self.value_list[i], x, 1, 1, 2)
+            for index in range(2, number):
                 label = QtGui.QLabel(" ")
                 grid1.addWidget(label, x, index)
             i = i + 1
@@ -137,12 +92,19 @@ class EditByMoney(QtGui.QWidget):
         vlayout.addLayout(grid2)
 
         self.setLayout(vlayout)
-        self.setWindowTitle(u'添加学生学籍信息')
-        self.resize(335, 549)
+        self.setWindowTitle(u'缴费信息')
+        self.resize(335, 156)
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
 
     def clears(self):
-        self.reset()
+        if self.stu_id == "":
+            self.lineEdit0.clear()
+        for value in self.value_list:
+            if not isinstance(value, list):
+                value.setCheckState(QtCore.Qt.Unchecked)
+            else:
+                for item in value:
+                    item.setCheckState(QtCore.Qt.Unchecked)
 
     def confirm(self):
         if not Sql().check_stu_id_exist(self.lineEdit0.text()):
@@ -165,52 +127,41 @@ class EditByMoney(QtGui.QWidget):
                 value = ",".join(value)
             values.append(value)
         total = sum(map(str_to_sum, values[2:]))
-        spend = total - self.old_value
-        ask_info = showComfirmDialog(self, u"合计：%8.2f 元，确认缴费？" % spend)
+        ask_info = showComfirmDialog(self, u"合计：%8.2f 元，确认缴费？" % total)
         if ask_info == 1:
             return 1
 
-        status = Sql("stu_money_info").update(list(self.data), values)
-        print values
+        status = Sql("stu_money_info").add(values)
         if status == 1:
             showWarnDialog(self, u"缴费失败！")
-            self.reset()
-            return 1
+            return 0
         status1 = stu_addmoney_add(values)
         if status1 == 1:
             showWarnDialog(self, u"缴费失败！")
-            Sql("stu_money_info").update(values, list(self.data))
-            self.reset()
+            Sql("stu_money_info").delete(self.lineEdit0.text())
         else:
             showMessageDialog(self, u"缴费成功！")
-            self.faWindow.sels()
-            self.close()
+            if self.stu_id == "":
+                self.reset()
+            else:
+                self.faWindow.sels()
+                self.close()
         return 0
 
     def reset(self):
-        i = 2
-        for items in self.value_list:
-            if isinstance(items, list):
-                j = 0
-                data = self.data[i].split(",")
-                for item in items:
-                    if data[j] != "0":
-                        pass
-                    else:
-                        item.setCheckState(QtCore.Qt.Unchecked)
-                    j = j + 1
+        self.lineEdit0.clear()
+        for item in self.value_list:
+            if isinstance(item, list):
+                for i in item:
+                    i.setCheckState(QtCore.Qt.Checked)
             else:
-                if self.data[i] != "0":
-                    pass
-                else:
-                    items.setCheckState(QtCore.Qt.Unchecked)
-            i = i + 1
+                item.setCheckState(QtCore.Qt.Checked)
 
 
 def main(object=None, stu_id=""):
     reload(sys)
     sys.setdefaultencoding('utf-8')
-    MainWindow_1 = EditByMoney(object, stu_id)
+    MainWindow_1 = EditPreMoney(object, stu_id)
     palette = QtGui.QPalette()
     palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("icon/bkg5.jpg")))
     MainWindow_1.setPalette(palette)
@@ -220,7 +171,7 @@ if __name__=="__main__":
     reload(sys)
     sys.setdefaultencoding('utf-8')
     app1 = QtGui.QApplication(sys.argv)
-    MainWindow_1 = EditByMoney("20180007")
+    MainWindow_1 = EditPreMoney("20180009")
     palette = QtGui.QPalette()
     palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("icon/bkg5.jpg")))
     MainWindow_1.setPalette(palette)

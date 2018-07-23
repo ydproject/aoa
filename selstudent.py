@@ -199,7 +199,10 @@ class SelStudent(QtGui.QWidget):
         if len(stu_id_list) == 0:
             showMessageDialog(self, u"删除学生信息成功！")
         else:
-            showWarnDialog(self, u"删除学生信息(%s)失败！" % ",".join(stu_id_list))
+            msg = u"""删除学生信息失败！
+INFO:
+    stu_base_info:%s""" % str(stu_id_list)
+            showWarnDialog(self, msg)
 
         self.sels()
         return 0

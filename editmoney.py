@@ -14,7 +14,7 @@ class EditMoney(QtGui.QWidget):
         self.stu_id = stu_id
 
         self.data = Sql("stu_money_info").select({u"学号": stu_id})[0]
-        self.old_value = sum(map(str_to_sum, self.data[1:]))
+        self.old_value = sum(map(str_to_sum, self.data[2:]))
 
         #编辑控件
         font = QtGui.QFont()
@@ -174,6 +174,12 @@ class EditMoney(QtGui.QWidget):
         if status == 1:
             showWarnDialog(self, u"缴费失败！")
             self.reset()
+            return 1
+        status1 = stu_addmoney_add(values)
+        if status1 == 1:
+            showWarnDialog(self, u"缴费失败！")
+            Sql("stu_money_info").update(values, list(self.data))
+            self.reset()
         else:
             showMessageDialog(self, u"缴费成功！")
             self.faWindow.sels()
@@ -181,7 +187,7 @@ class EditMoney(QtGui.QWidget):
         return 0
 
     def reset(self):
-        i = 1
+        i = 2
         for items in self.value_list:
             if isinstance(items, list):
                 j = 0

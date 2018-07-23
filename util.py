@@ -282,11 +282,34 @@ class Sql():
         return status
 
 
+def select_addmoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
+    sql = Sql(u"stu_base_info")
+    sql = Sql(u"stu_addmoney_info")
+    sql = Sql()
+    if len(value_list1) == 0 and len(value_list2) == 0:
+        label_str = "*"
+    else:
+        value_list1 = [u"stu_base_info." + i for i in value_list1]
+        value_list2 = [u"stu_addmoney_info." + i for i in value_list2]
+        label_str = u",".join(value_list1 + value_list2)
+
+    sql_info = u"select %s from stu_base_info, stu_addmoney_info where stu_base_info.学号=stu_addmoney_info.学号" % label_str
+    if len(dict1) != 0 or len(dict2) != 0:
+        select_list = []
+        if len(dict1) != 0:
+            for i in dict1:
+                select_list.append(u"stu_base_info.%s='%s'" % (i, dict1[i]))
+        if len(dict2) != 0:
+            for i in dict2:
+                select_list.append(u"stu_addmoney_info.%s='%s'" % (i, dict2[i]))
+        sql_info = sql_info + " and " + " and ".join(select_list)
+    return sql.select_uni(sql_info)
+
+
 def select_premoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
     sql = Sql(u"stu_base_info")
     sql = Sql(u"stu_money_pre")
     sql = Sql()
-    print value_list1, value_list2, dict1, dict2
     if len(value_list1) == 0 and len(value_list2) == 0:
         label_str = "*"
     else:
@@ -302,12 +325,7 @@ def select_premoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
                 select_list.append(u"stu_base_info.%s='%s'" % (i, dict1[i]))
         if len(dict2) != 0:
             for i in dict2:
-                if dict2[i] == u'-1':
-                    select_list.append(u"stu_money_pre.%s!='0'" % i)
-                elif dict2[i] == u'0':
-                    select_list.append(u"stu_money_pre.%s='0'" % i)
-                else:
-                    select_list.append(u"stu_money_pre.%s='%s'" % (i, dict2[i]))
+                select_list.append(u"stu_money_pre.%s='%s'" % (i, dict2[i]))
         sql_info = sql_info + " and " + " and ".join(select_list)
     return sql.select_uni(sql_info)
 
@@ -343,6 +361,105 @@ def select_money_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
     return sql.select_uni(sql_info)
 
 
+def delete_addmoney(stu_id, stu_term):
+    db_name = u"stu_addmoney_info"
+    conn = sqlite3.connect('example.db')
+    cur = conn.cursor()
+    status = 0
+    try:
+        sql = u"delete from %s where 学号='%s' and 学期='%s'" % (db_name, stu_id, stu_term)
+        cur.execute(sql)
+        conn.commit()
+    except Exception, e:
+        print traceback.format_exc()
+        status = 1
+    cur.close()
+    conn.close()
+    return status
+
+
+def updata_addmoney(old_list, new_list):
+    db_name = u"stu_addmoney_info"
+    conn = sqlite3.connect('example.db')
+    cur = conn.cursor()
+    status = 0
+    try:
+        sql = u"update %s set 缴费情况='%s',缴费时间='%s',金额='%s' where 学号='%s' and 学期='%s' and 费用期间='%s' and 种类='%s'" % (db_name, new_list[4],new_list[6],new_list[3],old_list[0], old_list[1], old_list[2], old_list[5])
+        cur.execute(sql)
+        conn.commit()
+    except Exception, e:
+        print traceback.format_exc()
+        status = 1
+    cur.close()
+    conn.close()
+    return status
+
+
+def stu_addmoney_add(values=[]):
+    db_name = u"stu_addmoney_info"
+    #values [(u'20180001', u'201803', u'1200', u'100,100,100', u'60,60,60', u'1200', u'1300')]
+    flags = read_file("stu_money_info.txt")
+    if len(values) < 2:
+        return 0
+    stu_id = values[0]
+    stu_term = values[1]
+    i = 2
+    for items in values[2:]:
+        flag = flags[i][0]
+        f_values = flags[i][1]
+        if len(f_values) == 1:
+            old_list = Sql(db_name).select({u"学号": stu_id, u"学期": stu_term, u"种类": flag})
+            if items != u"0":
+                f_status = u"已缴费"
+                if len(old_list) != 0 and old_list[0][4] == u"已缴费":
+                    create_time = old_list[0][-1]
+                else:
+                    create_time = time_to_str(time.time())
+            else:
+                f_status = u"未交费"
+                create_time = u""
+            new_list = [stu_id, stu_term, u"All", f_values[0], f_status, flag, create_time]
+            if len(old_list) != 0:
+                old_list = old_list[0]
+                status = updata_addmoney(old_list, new_list)
+            else:
+                status = Sql(db_name).add(new_list)
+        else:
+            j = 1
+            for item in items.split(u","):
+                f_value_flag = f_values[j]
+                old_list = Sql(db_name).select({u"学号": stu_id, u"学期": stu_term, u"种类": flag, u"费用期间": f_value_flag})
+                if item != u"0":
+                    f_status = u"已缴费"
+                    if len(old_list) != 0 and old_list[0][4] == u"已缴费":
+                        create_time = old_list[0][-1]
+                    else:
+                        create_time = time_to_str(time.time())
+                else:
+                    f_status = u"未交费"
+                    create_time = u""
+                new_list = [stu_id, stu_term, f_value_flag, f_values[0], f_status, flag, create_time]
+                if len(old_list) != 0:
+                    old_list = old_list[0]
+                    status = updata_addmoney(old_list, new_list)
+                else:
+                    status = Sql(db_name).add(new_list)
+                j = j + 1
+        i = i + 1
+
+    return status
+
+
+
+def time_to_str(l_time):
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(l_time))
+
+
+def str_to_time(str):
+    return time.mktime(time.strptime(str, '%Y-%m-%d %H:%M:%S'))
+
+
+
 if __name__ == '__main__':
     # showInputDialog()
     # test = Sql("stu_money_info")
@@ -352,4 +469,5 @@ if __name__ == '__main__':
     # print test.cur.description
     # # test.conn.commit()
     # test.close()
-    print select_money_by_stu(value_list1=[u"学号"], value_list2=[u"生活费"], dict1={u"学号": u"20180007"}, dict2={u"生活费": "0"})
+    # print select_addmoney_by_stu(value_list1=[u"学号"], value_list2=[u"生活费"], dict1={u"学号": u"20180007"}, dict2={u"生活费": "0"})
+    Sql("stu_money_pre")

@@ -19,11 +19,11 @@ class SelectMoney(QtGui.QWidget):
         frame = QtGui.QFrame(self)
         self.select_infos = read_file("stu_selmoney_info.txt")
         self.flag_list = [item for item, item_value in self.select_infos]
-        self.money_infos = read_file("stu_money_info.txt")
+        self.money_infos = read_file("stu_addmoney_info.txt")
         self.money_list = [item for item, item_value in self.money_infos]
         # 表格控件
         self.tablelist = [u''] + self.flag_list + self.money_list[1:]
-        stuInfo = select_money_by_stu(self.flag_list, self.money_list[1:])
+        stuInfo = select_addmoney_by_stu(self.flag_list, self.money_list[1:])
         self.currentTable = stuInfo
         self.tableWidget = QtGui.QTableWidget(self)
         self.tableWidget.setRowCount(len(stuInfo))
@@ -156,7 +156,7 @@ class SelectMoney(QtGui.QWidget):
             if len(self.value_list_money[i].text()) != 0:
                 dict2[unicode(self.label_list_money[i].text())] = unicode(self.value_list_money[i].text())
             i = i + 1
-        stuInfo = select_money_by_stu(self.flag_list, self.money_list[1:], dict1, dict2)
+        stuInfo = select_addmoney_by_stu(self.flag_list, self.money_list[1:], dict1, dict2)
         self.currentTable = stuInfo
         self.refresh_table(stuInfo)
 

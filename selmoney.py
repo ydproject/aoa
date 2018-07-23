@@ -67,7 +67,7 @@ class SelMoney(QtGui.QWidget):
 
         editButton = QtGui.QPushButton(frame)
         editButton.setText(u'编辑')
-        QtCore.QObject.connect(editButton, QtCore.SIGNAL("clicked()"), self.editmoney)
+        QtCore.QObject.connect(editButton, QtCore.SIGNAL("clicked()"), self.edit_money)
         if query_current_user()[2] != "Admin":
             editButton.setDisabled(True)
         else:
@@ -170,7 +170,7 @@ class SelMoney(QtGui.QWidget):
         self.currentTable = stuInfo
         self.refresh_table(stuInfo)
 
-    def editmoney(self):
+    def edit_money(self):
         i = 0
         stu_info_list = []
         while i < len(self.currentTable):
@@ -219,20 +219,29 @@ class SelMoney(QtGui.QWidget):
     def dels(self):
         i = 0
         stu_id_list = []
-        ask_ok = showComfirmDialog(self, u"是否删除学生信息？")
+        stu_id_list1 = []
+        ask_ok = showComfirmDialog(self, u"是否删除学生缴费信息？")
         if ask_ok == 1:
             return 1
         while i < len(self.currentTable):
             if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
                 stu_id = self.currentTable[i][0]
+                stu_term = get_term()
                 status = Sql("stu_money_info").delete(stu_id)
                 if status == 1:
                     stu_id_list.append(stu_id)
+                status1 = delete_addmoney(stu_id, stu_term)
+                if status1 == 1:
+                    stu_id_list1.append((stu_id, stu_term))
             i = i + 1
-        if len(stu_id_list) == 0:
-            showMessageDialog(self, u"删除学生信息成功！")
+        if len(stu_id_list) == 0 and len(stu_id_list1) == 0:
+            showMessageDialog(self, u"删除学生缴费信息成功！")
         else:
-            showWarnDialog(self, u"删除学生信息(%s)失败！" % ",".join(stu_id_list))
+            msg = u"""删除学生缴费信息失败！
+INFO:
+    stu_money_info:%s
+    stu_addmoney_info:%s""" % (str(stu_id_list), str(stu_id_list1))
+            showWarnDialog(self, msg)
 
         self.sels()
         return 0
