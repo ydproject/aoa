@@ -120,6 +120,10 @@ class AddPreMoney(QtGui.QWidget):
         ask_info = showComfirmDialog(self, u"合计：%8.2f 元，确认缴费？" % total)
         if ask_info == 1:
             return 1
+        num = add_flowing(u"%8.2f" % total, self.lineEdit0.text(), u"缴预收费")
+        if num == -1:
+            showWarnDialog(self, u"缴费失败！")
+            return 0
         old_list = Sql("stu_money_pre").select({u"学号": self.lineEdit0.text()})
         if len(old_list) == 0:
             status = Sql("stu_money_pre").add(values)
@@ -129,6 +133,7 @@ class AddPreMoney(QtGui.QWidget):
             status = Sql("stu_money_pre").update(old_list, new_list)
         if status == 1:
             showWarnDialog(self, u"缴费失败！")
+            Sql("flow_money_sel").delete(num)
             return 0
         else:
             showMessageDialog(self, u"缴费成功！")

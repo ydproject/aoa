@@ -159,13 +159,19 @@ class AddMoney(QtGui.QWidget):
         if ask_info == 1:
             return 1
 
+        num = add_flowing(u"%8.2f" % total, self.lineEdit0.text(), u"缴费")
+        if num == -1:
+            showWarnDialog(self, u"缴费失败！")
+            return 0
         status = Sql("stu_money_info").add(values)
         if status == 1:
             showWarnDialog(self, u"缴费失败！")
+            Sql("flow_money_sel").delete(num)
             return 0
         status1 = stu_addmoney_add(values)
         if status1 == 1:
             showWarnDialog(self, u"缴费失败！")
+            Sql("flow_money_sel").delete(num)
             Sql("stu_money_info").delete(self.lineEdit0.text())
         else:
             showMessageDialog(self, u"缴费成功！")

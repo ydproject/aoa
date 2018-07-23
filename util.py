@@ -450,6 +450,20 @@ def stu_addmoney_add(values=[]):
     return status
 
 
+def add_flowing(value="0", stu_id=u"", info=u""):
+    stuInfo = Sql("flow_money_sel").select_by_list()
+    num = str(len(stuInfo) + 1)
+    data_info = Sql().select({u"学号": stu_id})
+    if len(data_info) == 0:
+        type_value = u""
+    else:
+        type_value = data_info[0][1] + u"(%s)" % stu_id
+    values = [num, time_to_str(time.time()), value, type_value, info]
+    status = Sql("flow_money_sel").add(values)
+    if status == 1:
+        return -1
+    return num
+
 
 def time_to_str(l_time):
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(l_time))

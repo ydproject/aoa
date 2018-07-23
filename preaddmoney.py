@@ -115,8 +115,8 @@ class PreAddMoney(QtGui.QWidget):
         grid2.addWidget(selectButton, 1, 0)
         grid2.addWidget(clearButton, 1, 1)
         grid2.addWidget(modifyButton, 1, 2)
-        grid2.addWidget(deleteButton, 1, 3)
-        grid2.addWidget(editButton, 1, 4)
+        grid2.addWidget(editButton, 1, 3)
+        grid2.addWidget(deleteButton, 1, 4)
 
 
         grid3 = QtGui.QGridLayout()
@@ -130,7 +130,7 @@ class PreAddMoney(QtGui.QWidget):
 
         self.setLayout(vlayout)
 
-        self.resize(1200, 1000)
+        self.resize(600, 1000)
         self.setWindowTitle(u'缴费信息')
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
 
@@ -182,7 +182,7 @@ class PreAddMoney(QtGui.QWidget):
         if len(stu_info_list) > 1:
             showWarnDialog(self, u"只能选择一条记录！")
             return 1
-        money_info = Sql("stu_money_info").select({u"学号": stu_info_list[0][0], u"学期": get_term()})
+        # money_info = Sql("stu_money_info").select({u"学号": stu_info_list[0][0], u"学期": get_term()})
         self.editmoney = editpremoney.main(self, stu_info_list[0][0])
         self.editmoney.show()
 
@@ -211,28 +211,22 @@ class PreAddMoney(QtGui.QWidget):
     def dels(self):
         i = 0
         stu_id_list = []
-        stu_id_list1 = []
         ask_ok = showComfirmDialog(self, u"是否删除学生预收费信息？")
         if ask_ok == 1:
             return 1
         while i < len(self.currentTable):
             if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
                 stu_id = self.currentTable[i][0]
-                stu_term = get_term()
-                status = Sql("stu_money_info").delete(stu_id)
+                status = Sql("stu_money_pre").delete(stu_id)
                 if status == 1:
                     stu_id_list.append(stu_id)
-                status1 = delete_addmoney(stu_id, stu_term)
-                if status1 == 1:
-                    stu_id_list1.append((stu_id, stu_term))
             i = i + 1
-        if len(stu_id_list) == 0 and len(stu_id_list1) == 0:
-            showMessageDialog(self, u"删除学生缴费信息成功！")
+        if len(stu_id_list) == 0:
+            showMessageDialog(self, u"删除学生预收费信息成功！")
         else:
-            msg = u"""删除学生缴费信息失败！
+            msg = u"""删除学生预收费信息失败！
 INFO:
-    stu_money_info:%s
-    stu_addmoney_info:%s""" % (str(stu_id_list), str(stu_id_list1))
+    stu_money_pre:%s""" % (str(stu_id_list))
             showWarnDialog(self, msg)
 
         self.sels()

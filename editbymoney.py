@@ -170,21 +170,32 @@ class EditByMoney(QtGui.QWidget):
         if ask_info == 1:
             return 1
 
-        status = Sql("stu_money_info").update(list(self.data), values)
-        print values
-        if status == 1:
-            showWarnDialog(self, u"缴费失败！")
-            self.reset()
-            return 1
-        status1 = stu_addmoney_add(values)
-        if status1 == 1:
-            showWarnDialog(self, u"缴费失败！")
-            Sql("stu_money_info").update(values, list(self.data))
-            self.reset()
-        else:
-            showMessageDialog(self, u"缴费成功！")
-            self.faWindow.sels()
-            self.close()
+        if spend != 0:
+            if spend > 0:
+                f_str = u"缴费"
+            else:
+                f_str = u"退费"
+            num = add_flowing(u"%8.2f" % spend, self.lineEdit0.text(), f_str)
+            if num == -1:
+                showWarnDialog(self, u"缴费失败！")
+                return 0
+
+            status = Sql("stu_money_info").update(list(self.data), values)
+            if status == 1:
+                showWarnDialog(self, u"缴费失败！")
+                Sql("flow_money_sel").delete(num)
+                self.reset()
+                return 1
+            status1 = stu_addmoney_add(values)
+            if status1 == 1:
+                showWarnDialog(self, u"缴费失败！")
+                Sql("flow_money_sel").delete(num)
+                Sql("stu_money_info").update(values, list(self.data))
+                self.reset()
+            else:
+                showMessageDialog(self, u"缴费成功！")
+                self.faWindow.sels()
+                self.close()
         return 0
 
     def reset(self):

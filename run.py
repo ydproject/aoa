@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtGui, QtCore
-import addstudent, selstudent, addmoney, selmoney, adduser, changeuser, changepasswd, selectmoney, preaddmoney
+import addstudent, selstudent, addmoney, selmoney, adduser, changeuser, changepasswd, selectmoney, preaddmoney, flowingmoney
 from util import *
 
 
@@ -25,6 +25,8 @@ class MainWindow(QtGui.QMainWindow):
         self.connect(self.selecmoney, QtCore.SIGNAL('triggered()'), self.select_money)
         self.preaddmoney = QtGui.QAction(u'预收查询', self)
         self.connect(self.preaddmoney, QtCore.SIGNAL('triggered()'), self.pre_add_money)
+        self.flowmoney = QtGui.QAction(u'流水查询', self)
+        self.connect(self.flowmoney, QtCore.SIGNAL('triggered()'), self.flow_money)
         # 用户信息菜单子菜单
         self.chpasswd = QtGui.QAction(u'修改密码', self)
         self.connect(self.chpasswd, QtCore.SIGNAL('triggered()'), self.chpass)
@@ -47,8 +49,9 @@ class MainWindow(QtGui.QMainWindow):
         file5 = menubar5.addMenu(u'缴费信息管理')
         file5.addAction(self.addmoney)
         file5.addAction(self.modifymoney)
-        file5.addAction(self.selecmoney)
         file5.addAction(self.preaddmoney)
+        file5.addAction(self.selecmoney)
+        file5.addAction(self.flowmoney)
         #用户管理菜单
         menubar4 = self.menuBar()
         file4 = menubar4.addMenu(u'用户管理')
@@ -83,6 +86,10 @@ class MainWindow(QtGui.QMainWindow):
             self.chpasswd.setDisabled(False)
 
     # 点击按钮响应函数
+    def flow_money(self):
+        self.flowing_money = flowingmoney.main()
+        self.flowing_money.show()
+
     def pre_add_money(self):
         self.premoney = preaddmoney.main()
         self.premoney.show()
