@@ -282,7 +282,9 @@ class Sql():
         return status
 
 
-def select_addmoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
+def select_addmoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}, begin='1999/01/01 00:00:00', end='2100/12/01 00:00:00'):
+    begin = str_to_time(begin)
+    end = str_to_time(end)
     sql = Sql(u"stu_base_info")
     sql = Sql(u"stu_addmoney_info")
     sql = Sql()
@@ -303,7 +305,8 @@ def select_addmoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
             for i in dict2:
                 select_list.append(u"stu_addmoney_info.%s='%s'" % (i, dict2[i]))
         sql_info = sql_info + " and " + " and ".join(select_list)
-    return sql.select_uni(sql_info)
+    infos = sql.select_uni(sql_info)
+    return filter(lambda x:(str_to_time(x[-1]) <= end and str_to_time(x[-1]) >= begin), infos)
 
 
 def select_premoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
@@ -417,7 +420,7 @@ def stu_addmoney_add(values=[]):
                     create_time = time_to_str(time.time())
             else:
                 f_status = u"未交费"
-                create_time = u""
+                create_time = u"2000/01/01 00:00:00"
             new_list = [stu_id, stu_term, u"All", f_values[0], f_status, flag, create_time]
             if len(old_list) != 0:
                 old_list = old_list[0]
@@ -437,7 +440,7 @@ def stu_addmoney_add(values=[]):
                         create_time = time_to_str(time.time())
                 else:
                     f_status = u"未交费"
-                    create_time = u""
+                    create_time = u"2000/01/01 00:00:00"
                 new_list = [stu_id, stu_term, f_value_flag, f_values[0], f_status, flag, create_time]
                 if len(old_list) != 0:
                     old_list = old_list[0]
@@ -465,12 +468,20 @@ def add_flowing(value="0", stu_id=u"", info=u""):
     return num
 
 
+def flow_select_time(flag_list=[], begin='1999/01/01 00:00:00', end='2100/12/01 00:00:00'):
+    if flag_list == []:
+        return 0
+    begin = str_to_time(begin)
+    end = str_to_time(end)
+    infos = Sql("flow_money_sel").select_by_list(flag_list)
+    return filter(lambda x:(str_to_time(x[0]) <= end and str_to_time(x[0]) >= begin), infos)
+
 def time_to_str(l_time):
-    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(l_time))
+    return time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(l_time))
 
 
 def str_to_time(str):
-    return time.mktime(time.strptime(str, '%Y-%m-%d %H:%M:%S'))
+    return time.mktime(time.strptime(str, '%Y/%m/%d %H:%M:%S'))
 
 
 
@@ -484,4 +495,4 @@ if __name__ == '__main__':
     # # test.conn.commit()
     # test.close()
     # print select_addmoney_by_stu(value_list1=[u"学号"], value_list2=[u"生活费"], dict1={u"学号": u"20180007"}, dict2={u"生活费": "0"})
-    Sql("stu_money_pre")
+    select_addmoney_by_stu()

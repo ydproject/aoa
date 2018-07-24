@@ -31,16 +31,20 @@ class SelectMoney(QtGui.QWidget):
         self.tableWidget.setColumnWidth(0, 30)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
+        sum = 0
         for row in stuInfo:
             chkBoxItem = QtGui.QTableWidgetItem()
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
+            sum = sum + float(row[6])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
                 self.tableWidget.setItem(i, col + 1, item)
             i = i + 1
+
+        self.sum_info = QtGui.QLabel(u"合计: %8.2f元" % sum)
 
         #编辑框控件
         self.label_list_stu = []
@@ -53,11 +57,17 @@ class SelectMoney(QtGui.QWidget):
             edits = QtGui.QLineEdit()
             self.value_list_stu.append(edits)
 
-        for items, items_value in self.money_infos[1:]:
+        for items, items_value in self.money_infos[1:-1]:
             label = QtGui.QLabel(items)
             self.label_list_money.append(label)
             edits = QtGui.QLineEdit()
             self.value_list_money.append(edits)
+
+        self.startTime = QtCore.QDateTime(QtCore.QDate(1999,1,1), QtCore.QTime(0,0,0))
+
+        self.label_time = QtGui.QLabel(self.money_infos[-1][0])
+        self.begin_time = QtGui.QDateTimeEdit(self.startTime)
+        self.end_time = QtGui.QDateTimeEdit(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
 
         # 按钮控件
         selectButton = QtGui.QPushButton(frame)
@@ -103,6 +113,11 @@ class SelectMoney(QtGui.QWidget):
             else:
                 y = y + 2
 
+        grid1.addWidget(self.label_time, x, y)
+        grid1.addWidget(self.begin_time, x, y+1)
+        grid1.addWidget(self.end_time, x, y + 3)
+        grid1.addWidget(self.sum_info, x, y + 5)
+
         grid2 = QtGui.QGridLayout()
         grid2.setSpacing(10)
         grid2.addWidget(selectButton, 1, 0)
@@ -132,18 +147,21 @@ class SelectMoney(QtGui.QWidget):
         self.tableWidget.setColumnWidth(0, 30)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
+        sum = 0
         for row in stuInfo:
             chkBoxItem = QtGui.QTableWidgetItem()
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
+            sum = sum + float(row[6])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
                 self.tableWidget.setItem(i, col + 1, item)
             i = i + 1
+        self.sum_info.setText(u"合计: %8.2f元" % sum)
 
-    def sels(self):
+    def sels(self, ):
         i = 0
         dict1 = {}
         while i < len(self.label_list_stu):
@@ -156,9 +174,10 @@ class SelectMoney(QtGui.QWidget):
             if len(self.value_list_money[i].text()) != 0:
                 dict2[unicode(self.label_list_money[i].text())] = unicode(self.value_list_money[i].text())
             i = i + 1
-        stuInfo = select_addmoney_by_stu(self.flag_list, self.money_list[1:], dict1, dict2)
+        stuInfo = select_addmoney_by_stu(self.flag_list, self.money_list[1:], dict1, dict2, self.begin_time.text(), self.end_time.text())
         self.currentTable = stuInfo
         self.refresh_table(stuInfo)
+
 
 
     def edits(self):
@@ -171,6 +190,8 @@ class SelectMoney(QtGui.QWidget):
         for value in self.value_list_money:
             if not isinstance(value, QtGui.QComboBox):
                 value.clear()
+        self.begin_time.setDateTime(self.startTime)
+        self.end_time.setDateTime(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
         self.sels()
 
 

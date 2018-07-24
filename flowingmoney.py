@@ -6,6 +6,7 @@
 import sys
 from PyQt4 import QtGui, QtCore
 from util import *
+import datetime
 
 
 class FlowingMoney(QtGui.QWidget):
@@ -29,11 +30,13 @@ class FlowingMoney(QtGui.QWidget):
         self.tableWidget.setColumnWidth(0, 30)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
+        sum = 0
         for row in stuInfo:
             chkBoxItem = QtGui.QTableWidgetItem()
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
+            sum = sum + float(row[1])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
@@ -42,9 +45,11 @@ class FlowingMoney(QtGui.QWidget):
 
         #编辑框控件
         self.begin_label = QtGui.QLabel(u"开始时间:")
-        self.begin_edit = QtGui.QLineEdit()
+        self.begin_edit = QtGui.QDateTimeEdit(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
         self.end_label = QtGui.QLabel(u"结束时间:")
-        self.end_edit = QtGui.QLineEdit()
+        self.end_edit = QtGui.QDateTimeEdit(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
+
+        self.sum_info = QtGui.QLabel(u"合计: %8.2f元" % sum)
 
         # 按钮控件
         selectButton = QtGui.QPushButton(frame)
@@ -69,20 +74,23 @@ class FlowingMoney(QtGui.QWidget):
         grid2.setSpacing(10)
         grid2.addWidget(selectButton, 1, 0)
         grid2.addWidget(clearButton, 1, 1)
+        grid2.addWidget(self.sum_info, 1, 2)
 
 
         grid3 = QtGui.QGridLayout()
         grid3.setSpacing(10)
         grid3.addWidget(self.tableWidget, 3, 0, 5, 0)
 
+
         vlayout = QtGui.QVBoxLayout()
         vlayout.addLayout(grid1)
         vlayout.addLayout(grid2)
         vlayout.addLayout(grid3)
 
+
         self.setLayout(vlayout)
 
-        self.resize(1000, 1000)
+        self.resize(500, 1000)
         self.setWindowTitle(u'查询交易流水')
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
 
@@ -93,35 +101,33 @@ class FlowingMoney(QtGui.QWidget):
         self.tableWidget.setColumnWidth(0, 30)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
+        sum = 0
         for row in stuInfo:
             chkBoxItem = QtGui.QTableWidgetItem()
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
+            sum = sum + float(row[1])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
                 self.tableWidget.setItem(i, col + 1, item)
             i = i + 1
 
-    def sels(self):
-        i = 0
-        sel_dict = {}
-        while i < len(self.label_list):
-            if len(self.value_list[i].text()) != 0:
-                sel_dict[self.label_list
-                [i].text()] = self.value_list[i].text()
-            i = i + 1
+        self.sum_info.setText(u"合计: %8.2f元" % sum)
 
-        stuInfo = Sql("flow_money_sel").select(self.flag_list, sel_dict)
+    def sels(self, flag=0):
+        if flag == 0:
+            stuInfo = flow_select_time(self.flag_list, self.begin_edit.text(), self.end_edit.text())
+        else:
+            stuInfo = flow_select_time(self.flag_list)
         self.currentTable = stuInfo
         self.refresh_table(stuInfo)
 
     def clears(self):
-        for value in self.value_list:
-            if not isinstance(value, QtGui.QComboBox):
-                value.clear()
-        self.sels()
+        self.begin_edit.setDateTime(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
+        self.end_edit.setDateTime(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
+        self.sels(1)
 
 
 
