@@ -32,6 +32,7 @@ class PreAddMoney(QtGui.QWidget):
         self.tableWidget.setColumnWidth(0, 30)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
+        sum = 0
         for row in stuInfo:
             chkBoxItem = QtGui.QTableWidgetItem()
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
@@ -44,21 +45,29 @@ class PreAddMoney(QtGui.QWidget):
 
             money_info = Sql("stu_money_pre").select_by_list(self.money_list[1:], {u"学号": row[0]})
             if len(money_info) != 0:
+                sum = sum + float(money_info[0][0])
                 for j in range(0, len(money_info[0])):
                     vj = money_info[0][j]
                     item = QtGui.QTableWidgetItem(vj)
                     self.tableWidget.setItem(i, col + j + 2, item)
             i = i + 1
 
+        self.sum_info = QtGui.QLabel(u"合计: %8.2f元" % sum)
+
         #编辑框控件
         self.label_list = []
         self.value_list = []
         for items, items_value in self.select_infos:
+            label = QtGui.QLabel(items)
+            self.label_list.append(label)
             if str(items_value[0]) == "1":
-                label = QtGui.QLabel(items)
-                self.label_list.append(label)
                 edits = QtGui.QLineEdit()
-                self.value_list.append(edits)
+            else:
+                edits = QtGui.QComboBox()
+                edits.addItem("")
+                for item in get_flag_list("stu_base_info", items):
+                    edits.addItem(item)
+            self.value_list.append(edits)
 
         # 按钮控件
         selectButton = QtGui.QPushButton(frame)
@@ -117,6 +126,7 @@ class PreAddMoney(QtGui.QWidget):
         grid2.addWidget(modifyButton, 1, 2)
         grid2.addWidget(editButton, 1, 3)
         grid2.addWidget(deleteButton, 1, 4)
+        grid2.addWidget(self.sum_info, 1, 5)
 
 
         grid3 = QtGui.QGridLayout()
@@ -141,6 +151,7 @@ class PreAddMoney(QtGui.QWidget):
         self.tableWidget.setColumnWidth(0, 30)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
+        sum = 0
         for row in stuInfo:
             chkBoxItem = QtGui.QTableWidgetItem()
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
@@ -152,18 +163,20 @@ class PreAddMoney(QtGui.QWidget):
                 self.tableWidget.setItem(i, col + 1, item)
             money_info = Sql("stu_money_pre").select_by_list(self.money_list[1:], {u"学号":row[0]})
             if len(money_info) != 0:
+                sum = sum + float(money_info[0][0])
                 for j in range(0, len(money_info[0])):
                     vj = money_info[0][j]
                     item = QtGui.QTableWidgetItem(vj)
                     self.tableWidget.setItem(i, col + j + 2, item)
             i = i + 1
+        self.sum_info.setText(u"合计: %8.2f元" % sum)
 
     def sels(self):
         i = 0
         sel_dict = {}
         while i < len(self.label_list):
-            if len(self.value_list[i].text()) != 0:
-                sel_dict[self.label_list[i].text()] = self.value_list[i].text()
+            if len(get_text(self.value_list[i])) != 0:
+                sel_dict[self.label_list[i].text()] = get_text(self.value_list[i])
             i = i + 1
 
         stuInfo = Sql().select_by_list(self.flag_list, sel_dict)
@@ -204,8 +217,7 @@ class PreAddMoney(QtGui.QWidget):
 
     def clears(self):
         for value in self.value_list:
-            if not isinstance(value, QtGui.QComboBox):
-                value.clear()
+            clear_text(value)
         self.sels()
 
     def dels(self):

@@ -30,6 +30,11 @@ class AddStudent(QtGui.QWidget):
             self.null_list.append(str(item_value[0]))
             if str(item_value[0]) == "0" or str(item_value[0]) == "1":
                 lineEdit = QtGui.QLineEdit()
+            elif str(item_value[0]) == "2":
+                lineEdit = QtGui.QDateEdit(QtCore.QDate(1999,1,1))
+            elif str(item_value[0]) == "3":
+                lineEdit = QtGui.QDateEdit(QtCore.QDate.currentDate())
+                lineEdit.setDisabled(True)
             else:
                 lineEdit = QtGui.QComboBox()
                 for item in item_value:
@@ -85,11 +90,18 @@ class AddStudent(QtGui.QWidget):
         for value in self.value_list:
             if not isinstance(value, QtGui.QComboBox):
                 value.clear()
+            if isinstance(value, QtGui.QDateEdit):
+                if value.isEnabled():
+                    value.setDate(QtCore.QDate(1999,1,1))
+                else:
+                    value.setDate(QtCore.QDate.currentDate())
 
     def confirm(self):
         values = []
         i = 0
         for item in self.value_list:
+            if isinstance(item, QtGui.QDateEdit):
+                values.append(str(item.text()))
             if isinstance(item, QtGui.QLineEdit):
                 values.append(str(item.text()))
                 if len(str(item.text())) == 0 and self.null_list[i] == "0":

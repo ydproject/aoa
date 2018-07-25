@@ -28,6 +28,7 @@ class FlowingMoney(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
+        self.tableWidget.setColumnWidth(1, 180)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         sum = 0
@@ -99,6 +100,7 @@ class FlowingMoney(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
+        self.tableWidget.setColumnWidth(1, 180)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         sum = 0

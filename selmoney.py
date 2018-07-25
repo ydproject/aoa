@@ -54,11 +54,16 @@ class SelMoney(QtGui.QWidget):
         self.label_list = []
         self.value_list = []
         for items, items_value in self.select_infos:
+            label = QtGui.QLabel(items)
+            self.label_list.append(label)
             if str(items_value[0]) == "1":
-                label = QtGui.QLabel(items)
-                self.label_list.append(label)
                 edits = QtGui.QLineEdit()
-                self.value_list.append(edits)
+            else:
+                edits = QtGui.QComboBox()
+                edits.addItem("")
+                for item in get_flag_list("stu_base_info", items):
+                    edits.addItem(item)
+            self.value_list.append(edits)
 
         # 按钮控件
         selectButton = QtGui.QPushButton(frame)
@@ -130,7 +135,7 @@ class SelMoney(QtGui.QWidget):
 
         self.setLayout(vlayout)
 
-        self.resize(1200, 1000)
+        self.resize(1100, 1000)
         self.setWindowTitle(u'缴费信息')
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
 
@@ -162,8 +167,8 @@ class SelMoney(QtGui.QWidget):
         i = 0
         sel_dict = {}
         while i < len(self.label_list):
-            if len(self.value_list[i].text()) != 0:
-                sel_dict[self.label_list[i].text()] = self.value_list[i].text()
+            if len(get_text(self.value_list[i])) != 0:
+                sel_dict[self.label_list[i].text()] = get_text(self.value_list[i])
             i = i + 1
 
         stuInfo = Sql().select_by_list(self.flag_list, sel_dict)
@@ -212,8 +217,7 @@ class SelMoney(QtGui.QWidget):
 
     def clears(self):
         for value in self.value_list:
-            if not isinstance(value, QtGui.QComboBox):
-                value.clear()
+            clear_text(value)
         self.sels()
 
     def dels(self):

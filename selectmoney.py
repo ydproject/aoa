@@ -29,6 +29,7 @@ class SelectMoney(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
+        self.tableWidget.setColumnWidth(10, 180)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         sum = 0
@@ -54,13 +55,25 @@ class SelectMoney(QtGui.QWidget):
         for items, items_value in self.select_infos:
             label = QtGui.QLabel(items)
             self.label_list_stu.append(label)
-            edits = QtGui.QLineEdit()
+            if str(items_value[0]) == "1":
+                edits = QtGui.QLineEdit()
+            else:
+                edits = QtGui.QComboBox()
+                edits.addItem("")
+                for item in get_flag_list("stu_base_info", items):
+                    edits.addItem(item)
             self.value_list_stu.append(edits)
 
         for items, items_value in self.money_infos[1:-1]:
             label = QtGui.QLabel(items)
             self.label_list_money.append(label)
-            edits = QtGui.QLineEdit()
+            if str(items_value[0]) == "1":
+                edits = QtGui.QLineEdit()
+            else:
+                edits = QtGui.QComboBox()
+                edits.addItem("")
+                for item in get_flag_list("stu_addmoney_info", items):
+                    edits.addItem(item)
             self.value_list_money.append(edits)
 
         self.startTime = QtCore.QDateTime(QtCore.QDate(1999,1,1), QtCore.QTime(0,0,0))
@@ -145,6 +158,7 @@ class SelectMoney(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
+        self.tableWidget.setColumnWidth(10, 180)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         sum = 0
@@ -161,18 +175,18 @@ class SelectMoney(QtGui.QWidget):
             i = i + 1
         self.sum_info.setText(u"合计: %8.2f元" % sum)
 
-    def sels(self, ):
+    def sels(self):
         i = 0
         dict1 = {}
         while i < len(self.label_list_stu):
-            if len(self.value_list_stu[i].text()) != 0:
-                dict1[unicode(self.label_list_stu[i].text())] = unicode(self.value_list_stu[i].text())
+            if len(get_text(self.value_list_stu[i])) != 0:
+                dict1[unicode(self.label_list_stu[i].text())] = get_text(self.value_list_stu[i])
             i = i + 1
         dict2 = {}
         i = 0
         while i < len(self.label_list_money):
-            if len(self.value_list_money[i].text()) != 0:
-                dict2[unicode(self.label_list_money[i].text())] = unicode(self.value_list_money[i].text())
+            if len(get_text(self.value_list_money[i])) != 0:
+                dict2[unicode(self.label_list_money[i].text())] = get_text(self.value_list_money[i])
             i = i + 1
         stuInfo = select_addmoney_by_stu(self.flag_list, self.money_list[1:], dict1, dict2, self.begin_time.text(), self.end_time.text())
         self.currentTable = stuInfo
@@ -185,11 +199,9 @@ class SelectMoney(QtGui.QWidget):
 
     def clears(self):
         for value in self.value_list_stu:
-            if not isinstance(value, QtGui.QComboBox):
-                value.clear()
+            clear_text(value)
         for value in self.value_list_money:
-            if not isinstance(value, QtGui.QComboBox):
-                value.clear()
+            clear_text(value)
         self.begin_time.setDateTime(self.startTime)
         self.end_time.setDateTime(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
         self.sels()

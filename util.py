@@ -484,6 +484,36 @@ def str_to_time(str):
     return time.mktime(time.strptime(str, '%Y/%m/%d %H:%M:%S'))
 
 
+def get_text(object):
+    if isinstance(object, QtGui.QDateEdit):
+        return unicode(object.text())
+    if isinstance(object, QtGui.QLineEdit):
+        return unicode(object.text())
+    if isinstance(object, QtGui.QComboBox):
+        return unicode(object.currentText())
+    return unicode(object)
+
+
+def clear_text(object):
+    if isinstance(object, QtGui.QDateEdit):
+        if object.isEnabled():
+            object.setDate(QtCore.QDate(1999, 1, 1))
+        else:
+            object.setDate(QtCore.QDate.currentDate())
+    if isinstance(object, QtGui.QLineEdit):
+        object.clear()
+    if isinstance(object, QtGui.QComboBox):
+        object.setCurrentIndex(0)
+
+def get_flag_list(db_name, flag):
+    infos = Sql(db_name).select_by_list([flag])
+    infos = map(lambda x:x[0], infos)
+    infos = list(set(infos))
+    infos.sort()
+    return infos
+
+
+
 
 if __name__ == '__main__':
     # showInputDialog()
@@ -495,4 +525,4 @@ if __name__ == '__main__':
     # # test.conn.commit()
     # test.close()
     # print select_addmoney_by_stu(value_list1=[u"学号"], value_list2=[u"生活费"], dict1={u"学号": u"20180007"}, dict2={u"生活费": "0"})
-    select_addmoney_by_stu()
+    get_flag_list("stu_addmoney_info", u"班级")
