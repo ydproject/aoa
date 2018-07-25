@@ -102,6 +102,14 @@ class PreAddMoney(QtGui.QWidget):
         clearButton.setText(u'清空')
         QtCore.QObject.connect(clearButton, QtCore.SIGNAL("clicked()"), self.clears)
 
+        exportButton = QtGui.QPushButton(frame)
+        exportButton.setText(u'导出')
+        QtCore.QObject.connect(exportButton, QtCore.SIGNAL("clicked()"), self.export)
+        if query_current_user()[2] != "Admin":
+            exportButton.setDisabled(True)
+        else:
+            exportButton.setDisabled(False)
+
         #布局vlayout = QtGui.QVBoxLayout()
         grid1 = QtGui.QGridLayout()
         grid1.setSpacing(10)
@@ -126,7 +134,8 @@ class PreAddMoney(QtGui.QWidget):
         grid2.addWidget(modifyButton, 1, 2)
         grid2.addWidget(editButton, 1, 3)
         grid2.addWidget(deleteButton, 1, 4)
-        grid2.addWidget(self.sum_info, 1, 5)
+        grid2.addWidget(exportButton, 1, 5)
+        grid2.addWidget(self.sum_info, 1, 6)
 
 
         grid3 = QtGui.QGridLayout()
@@ -143,6 +152,42 @@ class PreAddMoney(QtGui.QWidget):
         self.resize(600, 1000)
         self.setWindowTitle(u'缴费信息')
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
+
+    def export(self):
+        file_name = save_file()
+        if file_name == "":
+            return
+        stu_info_list = []
+        i = 0
+        while i < len(self.currentTable):
+            if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
+                stu_info_list.append(self.currentTable[i])
+            i = i + 1
+        all_list = []
+        if len(stu_info_list) != 0:
+            for stu_info in stu_info_list:
+                tmp = list(stu_info)
+                money_info = Sql("stu_money_pre").select_by_list(self.money_list[1:], {u"学号":stu_info[0]})
+                if len(money_info) != 0:
+                    tmp.extend(list(money_info[0]))
+                else:
+                    tmp.extend([""] * len(self.money_list[1:]))
+                all_list.append(tmp)
+        else:
+            for stu_info in self.currentTable:
+                tmp = list(stu_info)
+                money_info = Sql("stu_money_pre").select_by_list(self.money_list[1:], {u"学号":stu_info[0]})
+                if len(money_info) != 0:
+                    tmp.extend(list(money_info[0]))
+                else:
+                    tmp.extend([""] * len(self.money_list[1:]))
+                all_list.append(tmp)
+
+        status = write_xls(file_name, self.flag_list + self.money_list[1:], all_list)
+        if status == 0:
+            showWarnDialog(self, u"导出Excel失败！")
+        else:
+            showMessageDialog(self, u"导出Excel成功: %s" % file_name )
 
     def refresh_table(self, stuInfo):
         self.tableWidget.clear()

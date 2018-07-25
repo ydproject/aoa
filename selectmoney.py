@@ -97,6 +97,14 @@ class SelectMoney(QtGui.QWidget):
         clearButton.setText(u'清空')
         QtCore.QObject.connect(clearButton, QtCore.SIGNAL("clicked()"), self.clears)
 
+        exportButton = QtGui.QPushButton(frame)
+        exportButton.setText(u'导出')
+        QtCore.QObject.connect(exportButton, QtCore.SIGNAL("clicked()"), self.export)
+        if query_current_user()[2] != "Admin":
+            exportButton.setDisabled(True)
+        else:
+            exportButton.setDisabled(False)
+
         #布局vlayout = QtGui.QVBoxLayout()
         grid1 = QtGui.QGridLayout()
         grid1.setSpacing(10)
@@ -136,6 +144,7 @@ class SelectMoney(QtGui.QWidget):
         grid2.addWidget(selectButton, 1, 0)
         grid2.addWidget(clearButton, 1, 1)
         grid2.addWidget(modifyButton, 1, 2)
+        grid2.addWidget(exportButton, 1, 3)
 
 
         grid3 = QtGui.QGridLayout()
@@ -152,6 +161,25 @@ class SelectMoney(QtGui.QWidget):
         self.resize(1200, 1000)
         self.setWindowTitle(u'查询缴费信息')
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
+
+    def export(self):
+        file_name = save_file()
+        if file_name == "":
+            return
+        stu_info_list = []
+        i = 0
+        while i < len(self.currentTable):
+            if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
+                stu_info_list.append(self.currentTable[i])
+            i = i + 1
+        if len(stu_info_list) != 0:
+            status = write_xls(file_name, self.flag_list + self.money_list[1:], stu_info_list)
+        else:
+            status = write_xls(file_name, self.flag_list + self.money_list[1:], self.currentTable)
+        if status == 0:
+            showWarnDialog(self, u"导出Excel失败！")
+        else:
+            showMessageDialog(self, u"导出Excel成功: %s" % file_name )
 
     def refresh_table(self, stuInfo):
         self.tableWidget.clear()

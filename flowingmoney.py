@@ -29,15 +29,19 @@ class FlowingMoney(QtGui.QWidget):
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
         self.tableWidget.setColumnWidth(1, 180)
+        self.tableWidget.setColumnWidth(3, 150)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         sum = 0
+        add_sum = 0
         for row in stuInfo:
             chkBoxItem = QtGui.QTableWidgetItem()
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
             sum = sum + float(row[1])
+            if float(row[1]) >= 0:
+                add_sum = add_sum + float(row[1])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
@@ -50,7 +54,7 @@ class FlowingMoney(QtGui.QWidget):
         self.end_label = QtGui.QLabel(u"结束时间:")
         self.end_edit = QtGui.QDateTimeEdit(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
 
-        self.sum_info = QtGui.QLabel(u"合计: %8.2f元" % sum)
+        self.sum_info = QtGui.QLabel(u"收入：%12.2f，支出：%12.2f， 合计：%12.2f元" % (add_sum, add_sum-sum, sum))
 
         # 按钮控件
         selectButton = QtGui.QPushButton(frame)
@@ -61,6 +65,14 @@ class FlowingMoney(QtGui.QWidget):
         clearButton = QtGui.QPushButton(frame)
         clearButton.setText(u'清空')
         QtCore.QObject.connect(clearButton, QtCore.SIGNAL("clicked()"), self.clears)
+
+        exportButton = QtGui.QPushButton(frame)
+        exportButton.setText(u'导出')
+        QtCore.QObject.connect(exportButton, QtCore.SIGNAL("clicked()"), self.export)
+        if query_current_user()[2] != "Admin":
+            exportButton.setDisabled(True)
+        else:
+            exportButton.setDisabled(False)
 
         #布局vlayout = QtGui.QVBoxLayout()
         grid1 = QtGui.QGridLayout()
@@ -75,7 +87,8 @@ class FlowingMoney(QtGui.QWidget):
         grid2.setSpacing(10)
         grid2.addWidget(selectButton, 1, 0)
         grid2.addWidget(clearButton, 1, 1)
-        grid2.addWidget(self.sum_info, 1, 2)
+        grid2.addWidget(exportButton, 1, 2)
+        grid2.addWidget(self.sum_info, 1, 3)
 
 
         grid3 = QtGui.QGridLayout()
@@ -91,9 +104,28 @@ class FlowingMoney(QtGui.QWidget):
 
         self.setLayout(vlayout)
 
-        self.resize(500, 1000)
+        self.resize(600, 1000)
         self.setWindowTitle(u'查询交易流水')
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
+
+    def export(self):
+        file_name = save_file()
+        if file_name == "":
+            return
+        stu_info_list = []
+        i = 0
+        while i < len(self.currentTable):
+            if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
+                stu_info_list.append(self.currentTable[i])
+            i = i + 1
+        if len(stu_info_list) != 0:
+            status = write_xls(file_name, self.flag_list, stu_info_list)
+        else:
+            status = write_xls(file_name, self.flag_list, self.currentTable)
+        if status == 0:
+            showWarnDialog(self, u"导出Excel失败！")
+        else:
+            showMessageDialog(self, u"导出Excel成功: %s" % file_name )
 
     def refresh_table(self, stuInfo):
         self.tableWidget.clear()
@@ -101,22 +133,26 @@ class FlowingMoney(QtGui.QWidget):
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
         self.tableWidget.setColumnWidth(1, 180)
+        self.tableWidget.setColumnWidth(3, 150)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         sum = 0
+        add_sum = 0
         for row in stuInfo:
             chkBoxItem = QtGui.QTableWidgetItem()
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
             sum = sum + float(row[1])
+            if float(row[1]) >= 0:
+                add_sum = add_sum + float(row[1])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
                 self.tableWidget.setItem(i, col + 1, item)
             i = i + 1
 
-        self.sum_info.setText(u"合计: %8.2f元" % sum)
+        self.sum_info.setText(u"收入：%12.2f，支出：%12.2f， 合计：%12.2f元" % (add_sum, add_sum-sum, sum))
 
     def sels(self, flag=0):
         if flag == 0:

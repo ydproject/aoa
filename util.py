@@ -4,28 +4,37 @@ import sqlite3
 import os
 from PyQt4 import QtGui, QtCore
 import time, datetime
+import Tkinter, tkFileDialog
 import traceback
+import pandas as pd
+from log import INFO, ERROR, WARN
 
 
 def get_term():
     data = read_file("stu_term_info.txt")
+    term = ""
     if len(data[0][1][0]) != 0:
-        return data[0][1][0]
+        term = data[0][1][0]
     if datetime.datetime.now().month in range(2, 6):
-        return str(datetime.datetime.now().year) + "01"
+        term = str(datetime.datetime.now().year) + "01"
     if datetime.datetime.now().month in range(6, 7):
-        return str(datetime.datetime.now().year) + "02"
+        term = str(datetime.datetime.now().year) + "02"
     if datetime.datetime.now().month in range(7, 12):
-        return str(datetime.datetime.now().year) + "03"
+        term = str(datetime.datetime.now().year) + "03"
     if datetime.datetime.now().month in [12, 1]:
-        return str(datetime.datetime.now().year) + "04"
+        term = str(datetime.datetime.now().year) + "04"
+    INFO("Get term info: %s" % term)
+    return term
 
 
 def query_current_user():
-    return Sql("current_user").select({u"学号": "0"})[0]
+    user_info = Sql("current_user").select({u"学号": "0"})[0]
+    INFO("Query current user: %s" % str(user_info))
+    return user_info
 
 
 def init_user():
+    INFO("Init user: Guest")
     Sql("current_user").delete("0")
     Sql("current_user").add(["0", "Guest", "Guest"])
     return "Guest"
@@ -38,14 +47,20 @@ def swith_user(user, passwd):
         new_list = ["0", user, data[0][3]]
         status = Sql("current_user").update(old_list, new_list)
         if status == 1:
+            ERROR("Swith user failed.")
             return 1
         else:
+            INFO("Swith user: %s" % str(data[0][1]))
             return data[0][1]
+    WARN("Swith user failed: user or passwd error!")
     return 1
 
 
 def get_user_id():
-    return int(time.time())
+    t_id = int(time.time())
+    INFO("Get user id: %d" % t_id)
+    return t_id
+
 
 def get_stu_id():
     num = 4
@@ -62,18 +77,24 @@ def get_stu_id():
         new_list = old_list[:-1]
         new_list.append(number)
         Sql("stu_number_info").update(old_list, new_list)
-        return str(datetime.datetime.now().year) + "0" * (num - len(number)) + number
+        t_id = str(datetime.datetime.now().year) + "0" * (num - len(number)) + number
+        INFO("Get stu id: %s" % t_id)
+        return t_id
     except Exception, e:
-        print u"get stu_id error!", traceback.format_exc()
-        return int(time.time())
+        t_id = int(time.time())
+        ERROR("Get stu id failed: %s. Output: %d" % (traceback.format_exc(), t_id))
+        return t_id
 
 
 def str_to_sum(str):
     try:
-        return reduce(lambda x,y:x+y, map(float, str.split(",")))
+        sum = reduce(lambda x,y:x+y, map(float, str.split(",")))
+        INFO("Str to sum: %f" % sum)
+        return sum
     except Exception,e:
-        print traceback.format_exc()
+        ERROR("Str to sum failed: %s. Output: 0" % traceback.format_exc())
         return 0
+
 
 def flag_to_str(f_list):
     if len(f_list) == 0:
@@ -513,6 +534,77 @@ def get_flag_list(db_name, flag):
     return infos
 
 
+def choose_dirname():
+    root = Tkinter.Tk()
+    root.withdraw()
+    options = {}
+    options['initialdir'] = os.path.join(os.getcwd(), u"download")
+    dir_name = tkFileDialog.askdirectory(**options)
+    return dir_name
+
+
+def choose_filepath():
+    root = Tkinter.Tk()
+    root.withdraw()
+    options = {}
+    options['defaultextension'] = '.xls'
+    options['initialdir'] = os.path.join(os.getcwd(), u"download")
+    options['filetypes'] = [('Excel files', '*.xls'), ('all files', '.*')]
+    filepath = tkFileDialog.askopenfilename(**options)
+    return filepath
+
+
+def save_file():
+    root = Tkinter.Tk()
+    root.withdraw()
+    options = {}
+    options['defaultextension'] = '.xls'
+    options['initialdir'] = os.path.join(os.getcwd(), u"download")
+    options['initialfile'] = '%d.xls' % int(time.time())
+    options['filetypes'] = [('all files', '.*'), ('Excel files', '*.xls')]
+    filepath = tkFileDialog.asksaveasfilename(**options)
+    return filepath
+
+
+def write_xls(file_name, flag_list, infos):
+    try:
+        df = pd.DataFrame(data=infos, columns=flag_list)
+        df.to_excel(file_name, index=False)
+        return 1
+    except Exception, e:
+        print traceback.format_exc()
+        return 0
+
+
+def read_xls(file_name):
+    try:
+        df = pd.read_excel(file_name,sheet_name=0)
+        return df.values.tolist()
+    except Exception, e:
+        print traceback.format_exc()
+        return []
+
+
+def clear_df_list(x):
+    y = unicode(x)
+    if y == u"nan":
+        return u""
+    else:
+        return y
+
+
+def update_stu(new_lists):
+    error_list = []
+    for new_list in new_lists:
+        new_list = map(clear_df_list, new_list)
+        old_list = Sql().select({u"学号":new_list[0]})
+        if len(old_list) == 0:
+            status = Sql().add(new_list)
+        else:
+            status = Sql().update(old_list[0], new_list)
+        if status == 1:
+            error_list.append(new_list[0])
+    return error_list
 
 
 if __name__ == '__main__':
@@ -525,4 +617,8 @@ if __name__ == '__main__':
     # # test.conn.commit()
     # test.close()
     # print select_addmoney_by_stu(value_list1=[u"学号"], value_list2=[u"生活费"], dict1={u"学号": u"20180007"}, dict2={u"生活费": "0"})
-    get_flag_list("stu_addmoney_info", u"班级")
+    # get_flag_list("stu_addmoney_info", u"班级")
+    # print choose_dirname()
+    # tkFileDialog.asksaveasfilename(**self.file_opt)
+    print read_xls(os.path.join(os.getcwd(), "download", "test.xls"))
+    # print choose_filepath()

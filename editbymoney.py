@@ -166,36 +166,62 @@ class EditByMoney(QtGui.QWidget):
             values.append(value)
         total = sum(map(str_to_sum, values[2:]))
         spend = total - self.old_value
-        ask_info = showComfirmDialog(self, u"合计：%8.2f 元，确认缴费？" % spend)
+
+        pre_info = Sql("stu_money_pre").select({u"学号": self.lineEdit0.text()})
+        if len(pre_info) == 0:
+            premoney = 0.0
+        else:
+            premoney = float(pre_info[0][1])
+            ask_info = showComfirmDialog(self, u"是否抵扣预收款？ %8.2f" % premoney)
+            if ask_info == 1:
+                premoney = 0.0
+            else:
+                pre_before = unicode(premoney)
+                pre_end = u"0.0"
+                if spend >= premoney:
+                    pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
+                else:
+                    pre_end = unicode(premoney - spend)
+                    pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
+                    premoney = spend
+                if pre_status != 0:
+                    pre_end = unicode(premoney - spend)
+                    premoney = 0.0
+                    showWarnDialog(self, u"抵扣预收费失败！")
+
+        ask_info = showComfirmDialog(self, u"合计：%8.2f 元，抵扣预收费：%8.2f 元，需缴纳：%8.2f 元，确认缴费？" % (spend, premoney, spend - premoney))
         if ask_info == 1:
+            Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
             return 1
+        spend = spend - premoney
 
-        if spend != 0:
-            if spend > 0:
-                f_str = u"缴费"
-            else:
-                f_str = u"退费"
-            num = add_flowing(u"%8.2f" % spend, self.lineEdit0.text(), f_str)
-            if num == -1:
-                showWarnDialog(self, u"缴费失败！")
-                return 0
-
-            status = Sql("stu_money_info").update(list(self.data), values)
-            if status == 1:
-                showWarnDialog(self, u"缴费失败！")
-                Sql("flow_money_sel").delete(num)
-                self.reset()
-                return 1
-            status1 = stu_addmoney_add(values)
-            if status1 == 1:
-                showWarnDialog(self, u"缴费失败！")
-                Sql("flow_money_sel").delete(num)
-                Sql("stu_money_info").update(values, list(self.data))
-                self.reset()
-            else:
-                showMessageDialog(self, u"缴费成功！")
-                self.faWindow.sels()
-                self.close()
+        if spend >= 0:
+            f_str = u"缴费"
+        else:
+            f_str = u"退费"
+        num = add_flowing(u"%8.2f" % spend, self.lineEdit0.text(), f_str)
+        if num == -1:
+            Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
+            showWarnDialog(self, u"缴费失败！")
+            return 0
+        status = Sql("stu_money_info").update(list(self.data), values)
+        if status == 1:
+            Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
+            Sql("flow_money_sel").delete(num)
+            self.reset()
+            showWarnDialog(self, u"缴费失败！")
+            return 1
+        status1 = stu_addmoney_add(values)
+        if status1 == 1:
+            Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
+            Sql("flow_money_sel").delete(num)
+            Sql("stu_money_info").update(values, list(self.data))
+            showWarnDialog(self, u"缴费失败！")
+            self.reset()
+        else:
+            showMessageDialog(self, u"缴费成功！")
+            self.faWindow.sels()
+            self.close()
         return 0
 
     def reset(self):

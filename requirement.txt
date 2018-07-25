@@ -10,3 +10,11 @@
 9.记录缴费退费流水信息
 10.excel导入导出
 11.界面美化
+12.交费流水按照 人员信息可查询， 流水表写入人员的关键信息
+
+pip install matplotlib -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+pip install numpy -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+pip install pandas -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+pip install seaborn scipy  -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+pip install xlwt -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+pip install xlrd -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
