@@ -122,10 +122,13 @@ def read_file(filename):
 
 
 def showInputDialog(object, message=""):
-    text, ok = QtGui.QInputDialog.getText(object, 'Input Dialog', message)
-    if ok:
+    ok = False
+    try:
+        while not ok:
+            text, ok = QtGui.QInputDialog.getText(object, 'Input Dialog', message)
         return str(text)
-    else:
+    except Exception, e:
+        ERROR("ShowInputDialog failed: %s" % traceback.format_exc())
         return ""
 
 
