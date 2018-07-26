@@ -38,27 +38,27 @@
       <file leaf-file-name="util.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="129" column="24" lean-forward="true" selection-start-line="129" selection-start-column="24" selection-end-line="129" selection-end-column="24" />
+            <state relative-caret-position="219">
+              <caret line="201" column="33" lean-forward="true" selection-start-line="201" selection-start-column="33" selection-end-line="201" selection-end-column="33" />
               <folding>
                 <element signature="e#25#39#0" expanded="true" />
-                <marker date="1532617635109" expanded="true" signature="5472:5491" ph="create table... missing_value" />
-                <marker date="1532617635109" expanded="true" signature="5974:5988" ph="select * fro... missing_value" />
-                <marker date="1532617635109" expanded="true" signature="6251:6284" ph="alter table missing_value... " />
-                <marker date="1532617635109" expanded="true" signature="6566:6609" ph="select * fro... sqlite_master" />
-                <marker date="1532617635109" expanded="true" signature="7345:7360" ph="select missi... missing_value" />
-                <marker date="1532617635109" expanded="true" signature="8076:8091" ph="select missi... missing_value" />
-                <marker date="1532617635109" expanded="true" signature="8738:8767" ph="insert into missing_value... " />
-                <marker date="1532617635109" expanded="true" signature="9471:9506" ph="update missing_value... " />
-                <marker date="1532617635109" expanded="true" signature="9995:10023" ph="delete from missing_value... " />
-                <marker date="1532617635109" expanded="true" signature="10837:10928" ph="select missi... stu_base_info" />
-                <marker date="1532617635109" expanded="true" signature="11939:12022" ph="select missi... stu_base_info" />
-                <marker date="1532617635109" expanded="true" signature="12932:13017" ph="select missi... stu_base_info" />
-                <marker date="1532617635109" expanded="true" signature="14048:14088" ph="delete from missing_value... " />
-                <marker date="1532617635109" expanded="true" signature="14482:14537" ph="delete from missing_value... " />
-                <marker date="1532617635109" expanded="true" signature="14482:14549" ph="update missing_value... " />
-                <marker date="1532617635109" expanded="true" signature="14482:14563" ph="update missing_value... " />
-                <marker date="1532617635109" expanded="true" signature="14482:14575" ph="update missing_value... " />
+                <marker date="1532619192614" expanded="true" signature="5568:5587" ph="create table... missing_value" />
+                <marker date="1532619192614" expanded="true" signature="6277:6291" ph="select * fro... missing_value" />
+                <marker date="1532619192614" expanded="true" signature="6554:6587" ph="alter table missing_value... " />
+                <marker date="1532619192614" expanded="true" signature="6869:6912" ph="select * fro... sqlite_master" />
+                <marker date="1532619192614" expanded="true" signature="7648:7663" ph="select missi... missing_value" />
+                <marker date="1532619192614" expanded="true" signature="8379:8394" ph="select missi... missing_value" />
+                <marker date="1532619192614" expanded="true" signature="9041:9070" ph="insert into missing_value... " />
+                <marker date="1532619192614" expanded="true" signature="9774:9809" ph="update missing_value... " />
+                <marker date="1532619192614" expanded="true" signature="10298:10326" ph="delete from missing_value... " />
+                <marker date="1532619192614" expanded="true" signature="11140:11231" ph="select missi... stu_base_info" />
+                <marker date="1532619192614" expanded="true" signature="12242:12325" ph="select missi... stu_base_info" />
+                <marker date="1532619192614" expanded="true" signature="13235:13320" ph="select missi... stu_base_info" />
+                <marker date="1532619192614" expanded="true" signature="14351:14391" ph="delete from missing_value... " />
+                <marker date="1532619192614" expanded="true" signature="14785:14840" ph="delete from missing_value... " />
+                <marker date="1532619192614" expanded="true" signature="14785:14852" ph="update missing_value... " />
+                <marker date="1532619192614" expanded="true" signature="14785:14866" ph="update missing_value... " />
+                <marker date="1532619192614" expanded="true" signature="14785:14878" ph="update missing_value... " />
               </folding>
             </state>
           </provider>
@@ -364,7 +364,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2570281" sideWeight="0.5255591" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32851407" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32690763" sideWeight="0.49092284" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2570281" sideWeight="0.4744409" order="2" side_tool="false" content_ui="tabs" x="0" y="232" width="1366" height="264" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2570281" sideWeight="0.4744409" order="2" side_tool="false" content_ui="tabs" x="0" y="232" width="1366" height="264" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32128513" sideWeight="0.49840257" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1373802" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -670,7 +670,7 @@
         <state relative-caret-position="610">
           <caret line="239" column="35" lean-forward="false" selection-start-line="239" selection-start-column="35" selection-end-line="239" selection-end-column="35" />
           <folding>
-            <element signature="e#59#69#0" expanded="true" />
+            <element signature="e#59#69#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -709,27 +709,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/util.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="129" column="24" lean-forward="true" selection-start-line="129" selection-start-column="24" selection-end-line="129" selection-end-column="24" />
+        <state relative-caret-position="219">
+          <caret line="201" column="33" lean-forward="true" selection-start-line="201" selection-start-column="33" selection-end-line="201" selection-end-column="33" />
           <folding>
             <element signature="e#25#39#0" expanded="true" />
-            <marker date="1532617635109" expanded="true" signature="5472:5491" ph="create table... missing_value" />
-            <marker date="1532617635109" expanded="true" signature="5974:5988" ph="select * fro... missing_value" />
-            <marker date="1532617635109" expanded="true" signature="6251:6284" ph="alter table missing_value... " />
-            <marker date="1532617635109" expanded="true" signature="6566:6609" ph="select * fro... sqlite_master" />
-            <marker date="1532617635109" expanded="true" signature="7345:7360" ph="select missi... missing_value" />
-            <marker date="1532617635109" expanded="true" signature="8076:8091" ph="select missi... missing_value" />
-            <marker date="1532617635109" expanded="true" signature="8738:8767" ph="insert into missing_value... " />
-            <marker date="1532617635109" expanded="true" signature="9471:9506" ph="update missing_value... " />
-            <marker date="1532617635109" expanded="true" signature="9995:10023" ph="delete from missing_value... " />
-            <marker date="1532617635109" expanded="true" signature="10837:10928" ph="select missi... stu_base_info" />
-            <marker date="1532617635109" expanded="true" signature="11939:12022" ph="select missi... stu_base_info" />
-            <marker date="1532617635109" expanded="true" signature="12932:13017" ph="select missi... stu_base_info" />
-            <marker date="1532617635109" expanded="true" signature="14048:14088" ph="delete from missing_value... " />
-            <marker date="1532617635109" expanded="true" signature="14482:14537" ph="delete from missing_value... " />
-            <marker date="1532617635109" expanded="true" signature="14482:14549" ph="update missing_value... " />
-            <marker date="1532617635109" expanded="true" signature="14482:14563" ph="update missing_value... " />
-            <marker date="1532617635109" expanded="true" signature="14482:14575" ph="update missing_value... " />
+            <marker date="1532619192614" expanded="true" signature="5568:5587" ph="create table... missing_value" />
+            <marker date="1532619192614" expanded="true" signature="6277:6291" ph="select * fro... missing_value" />
+            <marker date="1532619192614" expanded="true" signature="6554:6587" ph="alter table missing_value... " />
+            <marker date="1532619192614" expanded="true" signature="6869:6912" ph="select * fro... sqlite_master" />
+            <marker date="1532619192614" expanded="true" signature="7648:7663" ph="select missi... missing_value" />
+            <marker date="1532619192614" expanded="true" signature="8379:8394" ph="select missi... missing_value" />
+            <marker date="1532619192614" expanded="true" signature="9041:9070" ph="insert into missing_value... " />
+            <marker date="1532619192614" expanded="true" signature="9774:9809" ph="update missing_value... " />
+            <marker date="1532619192614" expanded="true" signature="10298:10326" ph="delete from missing_value... " />
+            <marker date="1532619192614" expanded="true" signature="11140:11231" ph="select missi... stu_base_info" />
+            <marker date="1532619192614" expanded="true" signature="12242:12325" ph="select missi... stu_base_info" />
+            <marker date="1532619192614" expanded="true" signature="13235:13320" ph="select missi... stu_base_info" />
+            <marker date="1532619192614" expanded="true" signature="14351:14391" ph="delete from missing_value... " />
+            <marker date="1532619192614" expanded="true" signature="14785:14840" ph="delete from missing_value... " />
+            <marker date="1532619192614" expanded="true" signature="14785:14852" ph="update missing_value... " />
+            <marker date="1532619192614" expanded="true" signature="14785:14866" ph="update missing_value... " />
+            <marker date="1532619192614" expanded="true" signature="14785:14878" ph="update missing_value... " />
           </folding>
         </state>
       </provider>

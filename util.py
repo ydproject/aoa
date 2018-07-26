@@ -165,8 +165,9 @@ class Sql():
         try:
             self.cur.execute(sql)
             data = self.cur.fetchall()
+            DEBUG("Select uni: %s output: %s" %(sql, str(data)))
         except Exception, e:
-            print traceback.format_exc()
+            ERROR("Select uni: %s failed: %s" % traceback.format_exc())
         self.close()
         return data
 
@@ -178,16 +179,21 @@ class Sql():
                 value_list.append(u"%s text" % label)
             value_str = ",".join(value_list)
             sql = u"create table %s(%s);" % (self.table_name, value_str)
+            DEBUG("Create table Sql: %s" % sql)
             self.cur.execute(sql)
             self.conn.commit()
+            DEBUG("Create table: %s" % self.table_name)
         except Exception, e:
-            print u"create table %s failed!" % self.table_name, traceback.format_exc()
+            ERROR("Create table %s failed: %s" % (self.table_name, traceback.format_exc()))
 
     def check_stu_id_exist(self, stu_id):
         data = self.select({u"学号": stu_id})
         if len(data) == 0:
-            return False
-        return True
+            res = False
+        else:
+            res = True
+        DEBUG("Check stu id exist: %s %s" %(stu_id, str(res)))
+        return res
 
     def check_table_update(self):
         try:
