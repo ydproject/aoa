@@ -28,8 +28,7 @@ class FlowingMoney(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
-        self.tableWidget.setColumnWidth(1, 180)
-        self.tableWidget.setColumnWidth(3, 150)
+        self.tableWidget.setColumnWidth(5, 180)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         sum = 0
@@ -39,9 +38,9 @@ class FlowingMoney(QtGui.QWidget):
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
-            sum = sum + float(row[1])
-            if float(row[1]) >= 0:
-                add_sum = add_sum + float(row[1])
+            sum = sum + float(row[5])
+            if float(row[5]) >= 0:
+                add_sum = add_sum + float(row[5])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
@@ -49,10 +48,29 @@ class FlowingMoney(QtGui.QWidget):
             i = i + 1
 
         #编辑框控件
+        self.label_list = []
+        self.value_list = []
+
+        for items, items_value in self.select_infos:
+            if str(items_value[0]) == "1":
+                label = QtGui.QLabel(items)
+                self.label_list.append(label)
+                edits = QtGui.QLineEdit()
+                self.value_list.append(edits)
+            if str(items_value[0]) == "2":
+                label = QtGui.QLabel(items)
+                self.label_list.append(label)
+                edits = QtGui.QComboBox()
+                edits.addItem("")
+                for item in get_flag_list("flow_money_sel", items):
+                    edits.addItem(item)
+                self.value_list.append(edits)
+
+        self.startTime = QtCore.QDateTime(QtCore.QDate(1999, 1, 1), QtCore.QTime(0, 0, 0))
         self.begin_label = QtGui.QLabel(u"开始时间:")
-        self.begin_edit = QtGui.QDateTimeEdit(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
+        self.begin_edit = QtGui.QDateTimeEdit(self.startTime)
         self.end_label = QtGui.QLabel(u"结束时间:")
-        self.end_edit = QtGui.QDateTimeEdit(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
+        self.end_edit = QtGui.QDateTimeEdit(QtCore.QDateTime(get_tommor_date(), QtCore.QTime(0, 0, 0)))
 
         self.sum_info = QtGui.QLabel(u"收入：%12.2f，支出：%12.2f， 合计：%12.2f元" % (add_sum, add_sum-sum, sum))
 
@@ -78,10 +96,25 @@ class FlowingMoney(QtGui.QWidget):
         grid1 = QtGui.QGridLayout()
         grid1.setSpacing(10)
 
-        grid1.addWidget(self.begin_label, 0, 0)
-        grid1.addWidget(self.begin_edit, 0, 1)
-        grid1.addWidget(self.end_label, 0, 2)
-        grid1.addWidget(self.end_edit, 0, 3)
+        i = 0
+        x = 1
+        y = 0
+        while i < len(self.label_list):
+            grid1.addWidget(self.label_list[i], x, y)
+            grid1.addWidget(self.value_list[i], x, y + 1)
+            i = i + 1
+            if i % 4 == 0:
+                x = x + 1
+                y = 0
+            else:
+                y = y + 2
+
+        x = x + 1
+        grid1.addWidget(self.begin_label, x, 0)
+        grid1.addWidget(self.begin_edit, x, 1)
+        x = x + 1
+        grid1.addWidget(self.end_label, x, 0)
+        grid1.addWidget(self.end_edit, x, 1)
 
         grid2 = QtGui.QGridLayout()
         grid2.setSpacing(10)
@@ -104,7 +137,7 @@ class FlowingMoney(QtGui.QWidget):
 
         self.setLayout(vlayout)
 
-        self.resize(600, 1000)
+        self.resize(1000, 1000)
         self.setWindowTitle(u'查询交易流水')
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
 
@@ -132,8 +165,7 @@ class FlowingMoney(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
-        self.tableWidget.setColumnWidth(1, 180)
-        self.tableWidget.setColumnWidth(3, 150)
+        self.tableWidget.setColumnWidth(5, 180)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         sum = 0
@@ -143,9 +175,9 @@ class FlowingMoney(QtGui.QWidget):
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
-            sum = sum + float(row[1])
-            if float(row[1]) >= 0:
-                add_sum = add_sum + float(row[1])
+            sum = sum + float(row[5])
+            if float(row[5]) >= 0:
+                add_sum = add_sum + float(row[5])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
@@ -155,16 +187,24 @@ class FlowingMoney(QtGui.QWidget):
         self.sum_info.setText(u"收入：%12.2f，支出：%12.2f， 合计：%12.2f元" % (add_sum, add_sum-sum, sum))
 
     def sels(self, flag=0):
+        i = 0
+        sel_dict = {}
+        while i < len(self.label_list):
+            if len(get_text(self.value_list[i])) != 0:
+                sel_dict[self.label_list[i].text()] = get_text(self.value_list[i])
+            i = i + 1
         if flag == 0:
-            stuInfo = flow_select_time(self.flag_list, self.begin_edit.text(), self.end_edit.text())
+            stuInfo = flow_select_time(self.flag_list, sel_dict, self.begin_edit.text(), self.end_edit.text())
         else:
             stuInfo = flow_select_time(self.flag_list)
         self.currentTable = stuInfo
         self.refresh_table(stuInfo)
 
     def clears(self):
-        self.begin_edit.setDateTime(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
-        self.end_edit.setDateTime(QtCore.QDateTime(QtCore.QDate.currentDate(), QtCore.QTime.currentTime()))
+        for value in self.value_list:
+            clear_text(value)
+        self.begin_edit.setDateTime(self.startTime)
+        self.end_edit.setDateTime(QtCore.QDateTime(get_tommor_date(), QtCore.QTime(0, 0, 0)))
         self.sels(1)
 
 

@@ -475,27 +475,26 @@ def stu_addmoney_add(values=[]):
 
 
 def add_flowing(value="0", stu_id=u"", info=u""):
+    flow_flag_list = [i for i, j in read_file("flow_money_sel.txt")]
+    print flow_flag_list
     stuInfo = Sql("flow_money_sel").select_by_list()
     num = str(len(stuInfo) + 1)
-    data_info = Sql().select({u"学号": stu_id})
-    if len(data_info) == 0:
-        type_value = u""
-    else:
-        type_value = data_info[0][1] + u"(%s)" % stu_id
-    values = [num, time_to_str(time.time()), value, type_value, info]
+    data_info = Sql().select_by_list(flow_flag_list[1:5], {u"学号": stu_id})[0]
+    values = [num] + list(data_info) + [time_to_str(time.time()), value, info]
+    print values
     status = Sql("flow_money_sel").add(values)
     if status == 1:
         return -1
     return num
 
 
-def flow_select_time(flag_list=[], begin='1999/01/01 00:00:00', end='2100/12/01 00:00:00'):
+def flow_select_time(flag_list=[], value_dict={}, begin='1999/01/01 00:00:00', end='2100/12/01 00:00:00'):
     if flag_list == []:
         return 0
     begin = str_to_time(begin)
     end = str_to_time(end)
-    infos = Sql("flow_money_sel").select_by_list(flag_list)
-    return filter(lambda x:(str_to_time(x[0]) <= end and str_to_time(x[0]) >= begin), infos)
+    infos = Sql("flow_money_sel").select_by_list(flag_list, value_dict)
+    return filter(lambda x:(str_to_time(x[4]) <= end and str_to_time(x[4]) >= begin), infos)
 
 def time_to_str(l_time):
     return time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(l_time))
@@ -503,6 +502,10 @@ def time_to_str(l_time):
 
 def str_to_time(str):
     return time.mktime(time.strptime(str, '%Y/%m/%d %H:%M:%S'))
+
+
+def get_tommor_date():
+    return QtCore.QDate(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day + 1)
 
 
 def get_text(object):
@@ -620,5 +623,6 @@ if __name__ == '__main__':
     # get_flag_list("stu_addmoney_info", u"班级")
     # print choose_dirname()
     # tkFileDialog.asksaveasfilename(**self.file_opt)
-    print read_xls(os.path.join(os.getcwd(), "download", "test.xls"))
+    # print read_xls(os.path.join(os.getcwd(), "download", "test.xls"))
     # print choose_filepath()
+    print get_tommor_date()
