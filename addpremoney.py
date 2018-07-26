@@ -120,7 +120,7 @@ class AddPreMoney(QtGui.QWidget):
         ask_info = showComfirmDialog(self, u"合计：%8.2f 元，确认缴费？" % total)
         if ask_info == 1:
             return 1
-        num = add_flowing(u"%8.2f" % total, self.lineEdit0.text(), u"缴预收费")
+        num = add_flowing(self, u"%8.2f" % total, self.lineEdit0.text(), u"缴预收费")
         if num == -1:
             showWarnDialog(self, u"缴费失败！")
             return 0

@@ -133,7 +133,7 @@ class EditPreMoney(QtGui.QWidget):
                 f_str = u"预收费"
             else:
                 f_str = u"退预收费"
-            num = add_flowing(u"%8.2f" % total, self.lineEdit0.text(), f_str)
+            num = add_flowing(self, u"%8.2f" % total, self.lineEdit0.text(), f_str)
             if num == -1:
                 showWarnDialog(self, u"缴费失败！")
                 return 0

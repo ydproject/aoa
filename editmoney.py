@@ -168,7 +168,7 @@ class EditMoney(QtGui.QWidget):
         spend = total - self.old_value
 
         pre_info = Sql("stu_money_pre").select({u"学号": self.lineEdit0.text()})
-        if len(pre_info) == 0:
+        if len(pre_info) == 0 or spend <= 0:
             premoney = 0.0
         else:
             premoney = float(pre_info[0][1])
@@ -199,7 +199,7 @@ class EditMoney(QtGui.QWidget):
             f_str = u"缴费"
         else:
             f_str = u"退费"
-        num = add_flowing(u"%8.2f" % spend, self.lineEdit0.text(), f_str)
+        num = add_flowing(self, u"%8.2f" % spend, self.lineEdit0.text(), f_str)
         if num == -1:
             Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
             showWarnDialog(self, u"缴费失败！")

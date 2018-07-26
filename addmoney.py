@@ -186,7 +186,7 @@ class AddMoney(QtGui.QWidget):
             f_str = u"缴费"
         else:
             f_str = u"退费"
-        num = add_flowing(u"%8.2f" % total, self.lineEdit0.text(), f_str)
+        num = add_flowing(self, u"%8.2f" % total, self.lineEdit0.text(), f_str)
         if num == -1:
             Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
             showWarnDialog(self, u"缴费失败！")

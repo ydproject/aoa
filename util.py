@@ -7,7 +7,7 @@ import time, datetime
 import Tkinter, tkFileDialog
 import traceback
 import pandas as pd
-from log import INFO, ERROR, WARN
+from log import INFO, ERROR, WARN, DEBUG
 
 
 def get_term():
@@ -23,18 +23,18 @@ def get_term():
         term = str(datetime.datetime.now().year) + "03"
     if datetime.datetime.now().month in [12, 1]:
         term = str(datetime.datetime.now().year) + "04"
-    INFO("Get term info: %s" % term)
+    DEBUG("Get term info: %s" % term)
     return term
 
 
 def query_current_user():
     user_info = Sql("current_user").select({u"学号": "0"})[0]
-    INFO("Query current user: %s" % str(user_info))
+    DEBUG("Query current user: %s" % str(user_info))
     return user_info
 
 
 def init_user():
-    INFO("Init user: Guest")
+    DEBUG("Init user: Guest")
     Sql("current_user").delete("0")
     Sql("current_user").add(["0", "Guest", "Guest"])
     return "Guest"
@@ -47,10 +47,10 @@ def swith_user(user, passwd):
         new_list = ["0", user, data[0][3]]
         status = Sql("current_user").update(old_list, new_list)
         if status == 1:
-            ERROR("Swith user failed.")
+            ERROR("Swith user failed. %s" % user)
             return 1
         else:
-            INFO("Swith user: %s" % str(data[0][1]))
+            DEBUG("Swith user: %s" % str(data[0][1]))
             return data[0][1]
     WARN("Swith user failed: user or passwd error!")
     return 1
@@ -58,7 +58,7 @@ def swith_user(user, passwd):
 
 def get_user_id():
     t_id = int(time.time())
-    INFO("Get user id: %d" % t_id)
+    DEBUG("Get user id: %d" % t_id)
     return t_id
 
 
@@ -78,7 +78,7 @@ def get_stu_id():
         new_list.append(number)
         Sql("stu_number_info").update(old_list, new_list)
         t_id = str(datetime.datetime.now().year) + "0" * (num - len(number)) + number
-        INFO("Get stu id: %s" % t_id)
+        DEBUG("Get stu id: %s" % t_id)
         return t_id
     except Exception, e:
         t_id = int(time.time())
@@ -89,7 +89,7 @@ def get_stu_id():
 def str_to_sum(str):
     try:
         sum = reduce(lambda x,y:x+y, map(float, str.split(",")))
-        INFO("Str to sum: %f" % sum)
+        DEBUG("Str to sum: %s to %f" % (str, sum))
         return sum
     except Exception,e:
         ERROR("Str to sum failed: %s. Output: 0" % traceback.format_exc())
@@ -98,11 +98,15 @@ def str_to_sum(str):
 
 def flag_to_str(f_list):
     if len(f_list) == 0:
+        DEBUG("Flag to str: %s to ''" % str(f_list))
         return ""
     if len(f_list) == 1:
+        DEBUG("Flag to str: %s to %s" % (str(f_list), f_list[0]))
         return f_list[0]
     str_list = [f_list[0]] * (len(f_list) - 1)
-    return ",".join(str_list)
+    str = ",".join(str_list)
+    DEBUG("Flag to str: %s to %s" % (str(f_list), str))
+    return str
 
 
 def read_file(filename):
@@ -113,6 +117,7 @@ def read_file(filename):
         if len(items) > 0:
             list_info = [i.decode("utf8") for i in items[1:]]
             infos.append((items[0].decode("utf8"), list_info))
+    DEBUG("Read file %s: %s" % (filename, str(infos)))
     return infos
 
 
@@ -122,6 +127,7 @@ def showInputDialog(object, message=""):
         return str(text)
     else:
         return ""
+
 
 def showWarnDialog(object, message=""):
     QtGui.QMessageBox.warning(object, u"警告", message, QtGui.QMessageBox.Cancel)
@@ -474,14 +480,15 @@ def stu_addmoney_add(values=[]):
     return status
 
 
-def add_flowing(value="0", stu_id=u"", info=u""):
+def add_flowing(object, value="0", stu_id=u"", info=u""):
+    msg = u""
+    if float(value) < 0:
+        msg = showInputDialog(object, u"请记录退费原因：")
     flow_flag_list = [i for i, j in read_file("flow_money_sel.txt")]
-    print flow_flag_list
     stuInfo = Sql("flow_money_sel").select_by_list()
     num = str(len(stuInfo) + 1)
     data_info = Sql().select_by_list(flow_flag_list[1:5], {u"学号": stu_id})[0]
-    values = [num] + list(data_info) + [time_to_str(time.time()), value, info]
-    print values
+    values = [num] + list(data_info) + [time_to_str(time.time()), value, info, msg]
     status = Sql("flow_money_sel").add(values)
     if status == 1:
         return -1
@@ -625,4 +632,4 @@ if __name__ == '__main__':
     # tkFileDialog.asksaveasfilename(**self.file_opt)
     # print read_xls(os.path.join(os.getcwd(), "download", "test.xls"))
     # print choose_filepath()
-    print get_tommor_date()
+    print showInputDialog()
