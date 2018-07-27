@@ -154,11 +154,13 @@ class SelStudent(QtGui.QWidget):
         new_lists = read_xls(file_name)
         error_list = update_stu(new_lists)
         if len(error_list) == 0:
+            INFO(u"Import student info success!user: %s" % unicode(query_current_user()[1]))
             showMessageDialog(self, u"导入Excel成功！")
             self.sels()
         else:
+            ERROR(u"Import student info failed!user: %s, error_values: %s" % (
+            unicode(query_current_user()[1]), unicode(error_list)))
             showWarnDialog(self, u"导出Excel失败: %s" % ",".join(error_list))
-
 
     def export(self):
         file_name = save_file()
@@ -170,13 +172,15 @@ class SelStudent(QtGui.QWidget):
             if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
                 stu_info_list.append(self.currentTable[i])
             i = i + 1
-        if len(stu_info_list) != 0:
-            status = write_xls(file_name, self.flag_list, stu_info_list)
-        else:
-            status = write_xls(file_name, self.flag_list, self.currentTable)
-        if status == 0:
+        if len(stu_info_list) == 0:
+            stu_info_list = self.currentTable
+        status = write_xls(file_name, self.flag_list, stu_info_list)
+        if status == 1:
+            ERROR(u"Export student info to excel failed! user: %s" % unicode(query_current_user()[1]))
             showWarnDialog(self, u"导出Excel失败！")
         else:
+            INFO(u"Export student info to excel success!user: %s, file_name: %s, values: %s" % (
+            unicode(query_current_user()[1]), unicode(file_name), unicode(stu_info_list)))
             showMessageDialog(self, u"导出Excel成功: %s" % file_name )
 
     def adds(self):
@@ -247,6 +251,11 @@ class SelStudent(QtGui.QWidget):
                 status = Sql().delete(stu_id)
                 if status == 1:
                     stu_id_list.append(stu_id)
+                    ERROR(u"Delete student info failed! user: %s, values: %s" % (
+                        unicode(query_current_user()[1]), unicode(self.currentTable[i])))
+                else:
+                    INFO(u"Delete student info success!user: %s, values: %s" % (
+                        unicode(query_current_user()[1]), unicode(self.currentTable[i])))
             i = i + 1
         if len(stu_id_list) == 0:
             showMessageDialog(self, u"删除学生信息成功！")

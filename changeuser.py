@@ -101,6 +101,7 @@ class ChangeUser(QtGui.QWidget):
             showWarnDialog(self, u"该用户名密码不正确！")
         else:
             # showMessageDialog(self, u"切换用户为:%s！" % status)
+            INFO(u"Change user success! user: %s input user: %s" % (unicode(query_current_user()[1]), unicode(self.value_list[0].text())))
             self.close()
             self.faWindows.initUI()
         return 0

@@ -151,14 +151,17 @@ class FlowingMoney(QtGui.QWidget):
             if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
                 stu_info_list.append(self.currentTable[i])
             i = i + 1
-        if len(stu_info_list) != 0:
-            status = write_xls(file_name, self.flag_list, stu_info_list)
-        else:
-            status = write_xls(file_name, self.flag_list, self.currentTable)
-        if status == 0:
+        if len(stu_info_list) == 0:
+            stu_info_list = self.currentTable
+        status = write_xls(file_name, self.flag_list, stu_info_list)
+        if status == 1:
             showWarnDialog(self, u"导出Excel失败！")
+            ERROR(u"Export flowing money info failed! user: %s, values: %s" % (
+            unicode(query_current_user()[1]), unicode(stu_info_list)))
         else:
             showMessageDialog(self, u"导出Excel成功: %s" % file_name )
+            INFO(u"Export flowing money info success! user: %s, values: %s" % (
+                unicode(query_current_user()[1]), unicode(stu_info_list)))
 
     def refresh_table(self, stuInfo):
         self.tableWidget.clear()

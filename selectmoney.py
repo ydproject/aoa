@@ -172,13 +172,16 @@ class SelectMoney(QtGui.QWidget):
             if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
                 stu_info_list.append(self.currentTable[i])
             i = i + 1
-        if len(stu_info_list) != 0:
-            status = write_xls(file_name, self.flag_list + self.money_list[1:], stu_info_list)
-        else:
-            status = write_xls(file_name, self.flag_list + self.money_list[1:], self.currentTable)
-        if status == 0:
+        if len(stu_info_list) == 0:
+            stu_info_list = self.currentTable
+        status = write_xls(file_name, self.flag_list + self.money_list[1:], stu_info_list)
+        if status == 1:
+            ERROR(u"Export student money details info failed! user: %s, values: %s" % (
+            unicode(query_current_user()[1]), unicode(stu_info_list)))
             showWarnDialog(self, u"导出Excel失败！")
         else:
+            INFO(u"Export student money details info success! user: %s, values: %s" % (
+                unicode(query_current_user()[1]), unicode(stu_info_list)))
             showMessageDialog(self, u"导出Excel成功: %s" % file_name )
 
     def refresh_table(self, stuInfo):
@@ -219,8 +222,6 @@ class SelectMoney(QtGui.QWidget):
         stuInfo = select_addmoney_by_stu(self.flag_list, self.money_list[1:], dict1, dict2, self.begin_time.text(), self.end_time.text())
         self.currentTable = stuInfo
         self.refresh_table(stuInfo)
-
-
 
     def edits(self):
         pass

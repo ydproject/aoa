@@ -166,9 +166,14 @@ class EditByMoney(QtGui.QWidget):
             values.append(value)
         total = sum(map(str_to_sum, values[2:]))
         spend = total - self.old_value
-
+        pre_before = u"0.0"
+        pre_end = u"0.0"
         pre_info = Sql("stu_money_pre").select({u"学号": self.lineEdit0.text()})
-        if len(pre_info) == 0 or spend <= 0:
+        if len(pre_info) == 0:
+            Sql("stu_money_pre").add([self.lineEdit0.text(), unicode(pre_end)])
+            premoney = 0.0
+        elif spend <= 0:
+            pre_end = pre_before = unicode(pre_info[0][1])
             premoney = 0.0
         else:
             premoney = float(pre_info[0][1])
@@ -177,7 +182,6 @@ class EditByMoney(QtGui.QWidget):
                 premoney = 0.0
             else:
                 pre_before = unicode(premoney)
-                pre_end = u"0.0"
                 if spend >= premoney:
                     pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
                 else:
@@ -185,7 +189,7 @@ class EditByMoney(QtGui.QWidget):
                     pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
                     premoney = spend
                 if pre_status != 0:
-                    pre_end = unicode(premoney - spend)
+                    pre_end = pre_before
                     premoney = 0.0
                     showWarnDialog(self, u"抵扣预收费失败！")
 
@@ -203,6 +207,8 @@ class EditByMoney(QtGui.QWidget):
         if num == -1:
             Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
             showWarnDialog(self, u"缴费失败！")
+            ERROR(u"Edit student money failed! user: %s, stu_id: %s" % (
+            unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
             return 0
         status = Sql("stu_money_info").update(list(self.data), values)
         if status == 1:
@@ -210,6 +216,8 @@ class EditByMoney(QtGui.QWidget):
             Sql("flow_money_sel").delete(num)
             self.reset()
             showWarnDialog(self, u"缴费失败！")
+            ERROR(u"Edit student money failed! user: %s, stu_id: %s" % (
+            unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
             return 1
         status1 = stu_addmoney_add(values)
         if status1 == 1:
@@ -217,9 +225,13 @@ class EditByMoney(QtGui.QWidget):
             Sql("flow_money_sel").delete(num)
             Sql("stu_money_info").update(values, list(self.data))
             showWarnDialog(self, u"缴费失败！")
+            ERROR(u"Edit student money failed! user: %s, stu_id: %s" % (
+            unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
             self.reset()
         else:
             showMessageDialog(self, u"缴费成功！")
+            INFO(u"Edit student money success!user: %s, stu_id: %s, values: %s" % (
+            unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(values)))
             self.faWindow.sels()
             self.close()
         return 0

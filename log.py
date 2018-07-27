@@ -15,7 +15,7 @@ def read_file(filename):
     return infos
 
 
-LOG_FORMAT = "%(asctime)s|%(levelname)s| %(message)s"
+LOG_FORMAT = "%(asctime)s|%(filename)s|%(lineno)s|%(levelname)s| %(message)s"
 DATE_FORMAT = "%Y/%m/%d %H:%M:%S"
 
 log_info = read_file("log_info.txt")

@@ -109,8 +109,11 @@ class ChangePasswd(QtGui.QWidget):
         status = Sql("auth").update(old_list, new_list)
         if status == 1:
             showWarnDialog(self, u"用户密码修改失败！")
+            ERROR(u"Modify user password failed! user: %s, values: %s" % (
+                unicode(current_user), unicode(new_list)))
         else:
             showMessageDialog(self, u"用户密码修改成功！")
+            INFO(u"Modify user password success! user: %s" % unicode(current_user))
             self.close()
         return 0
 

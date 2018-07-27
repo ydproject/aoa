@@ -119,10 +119,9 @@ class EditPreMoney(QtGui.QWidget):
         total = sum(map(str_to_sum, values[1:]))
 
         old_list = Sql("stu_money_pre").select({u"学号": self.lineEdit0.text()})
-        if len(old_list) != 0:
-            old_list = old_list[0]
-            new_list = [old_list[0], str(total)]
-            total = total - float(old_list[1])
+        old_list = old_list[0]
+        new_list = [old_list[0], str(total)]
+        total = total - float(old_list[1])
 
         ask_info = showComfirmDialog(self, u"合计：%8.2f 元，确认缴费？" % total)
         if ask_info == 1:
@@ -139,16 +138,20 @@ class EditPreMoney(QtGui.QWidget):
                 return 0
 
             if len(old_list) == 0:
-                status = Sql("stu_money_pre").add(values)
+                status = Sql("stu_money_pre").add(new_list)
             else:
                 status = Sql("stu_money_pre").update(old_list, new_list)
 
             if status == 1:
                 showWarnDialog(self, u"缴费失败！")
+                ERROR(u"Edit student prepare money failed! user: %s, stu_id: %s, values: %s" % (
+                unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(new_list)))
                 Sql("flow_money_sel").delete(num)
                 return 0
             else:
                 showMessageDialog(self, u"缴费成功！")
+                INFO(u"Edit student prepare money success!user: %s, stu_id: %s, values: %s" % (
+                unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(new_list)))
                 if self.stu_id == "":
                     self.reset()
                 else:

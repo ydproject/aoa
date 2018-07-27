@@ -106,8 +106,10 @@ class AddUser(QtGui.QWidget):
         status = Sql("auth").add(values)
         if status == 1:
             showWarnDialog(self, u"添加用户信息失败！")
+            ERROR(u"Add user failed! user: %s, values: %s" % (unicode(query_current_user()[1]), unicode(values)))
         else:
             showMessageDialog(self, u"添加用户信息成功！")
+            INFO(u"Add user success! user: %s, add user: %s" % (unicode(query_current_user()[1]), unicode(values[1])))
             self.close()
         return 0
 

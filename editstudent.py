@@ -51,7 +51,7 @@ class EditStudent(QtGui.QWidget):
         # QtCore.QObject.connect(pushButton_2, QtCore.SIGNAL("clicked()"), comboBox_1.clear)
         for value in self.value_list:
             if not isinstance(value, QtGui.QComboBox):
-                QtCore.QObject.connect(pushButton_2, QtCore.SIGNAL("clicked()"), value.clear)
+                QtCore.QObject.connect(pushButton_2, QtCore.SIGNAL("clicked()"), clear_text(value))
 
         #布局
         vlayout = QtGui.QVBoxLayout()
@@ -103,9 +103,11 @@ class EditStudent(QtGui.QWidget):
 
         status = Sql().update(self.stu_info, values)
         if status == 1:
+            ERROR(u"Edit student info failed! user: %s" % unicode(query_current_user()[1]))
             showWarnDialog(self, u"提交学生信息失败！")
             return 1
         else:
+            INFO(u"Edit student info success!user: %s, old_values: %s, new_values: %s" % (unicode(query_current_user()[1]), unicode(self.stu_info), unicode(values)))
             showMessageDialog(self, u"提交学生信息成功！")
             self.faWindow.sels()
             self.close()

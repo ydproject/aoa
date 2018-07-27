@@ -159,29 +159,25 @@ class SelMoney(QtGui.QWidget):
                 stu_info_list.append(self.currentTable[i])
             i = i + 1
         all_list = []
-        if len(stu_info_list) != 0:
-            for stu_info in stu_info_list:
-                tmp = list(stu_info)
-                money_info = Sql("stu_money_info").select_by_list(self.money_list[1:], {u"学号":stu_info[0], u"学期": get_term()})
-                if len(money_info) != 0:
-                    tmp.extend(list(money_info[0]))
-                else:
-                    tmp.extend([""] * len(self.money_list[1:]))
-                all_list.append(tmp)
-        else:
-            for stu_info in self.currentTable:
-                tmp = list(stu_info)
-                money_info = Sql("stu_money_info").select_by_list(self.money_list[1:], {u"学号":stu_info[0], u"学期": get_term()})
-                if len(money_info) != 0:
-                    tmp.extend(list(money_info[0]))
-                else:
-                    tmp.extend([""] * len(self.money_list[1:]))
-                all_list.append(tmp)
+        if len(stu_info_list) == 0:
+            stu_info_list = self.currentTable
+        for stu_info in stu_info_list:
+            tmp = list(stu_info)
+            money_info = Sql("stu_money_info").select_by_list(self.money_list[1:], {u"学号":stu_info[0], u"学期": get_term()})
+            if len(money_info) != 0:
+                tmp.extend(list(money_info[0]))
+            else:
+                tmp.extend([""] * len(self.money_list[1:]))
+            all_list.append(tmp)
 
         status = write_xls(file_name, self.flag_list + self.money_list[1:], all_list)
-        if status == 0:
+        if status == 1:
+            ERROR(u"Export student money info failed! user: %s, values: %s" % (
+            unicode(query_current_user()[1]), unicode(stu_info_list)))
             showWarnDialog(self, u"导出Excel失败！")
         else:
+            INFO(u"Export student money info success! user: %s, values: %s" % (
+            unicode(query_current_user()[1]), unicode(stu_info_list)))
             showMessageDialog(self, u"导出Excel成功: %s" % file_name )
 
     def refresh_table(self, stuInfo):
@@ -276,12 +272,22 @@ class SelMoney(QtGui.QWidget):
             if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
                 stu_id = self.currentTable[i][0]
                 stu_term = get_term()
-                status = Sql("stu_money_info").delete(stu_id)
+                status = delete_money(stu_id, stu_term)
                 if status == 1:
                     stu_id_list.append(stu_id)
+                    ERROR(u"Delete student money info failed!user: %s, stu_id: %s, stu_term: %s" % (
+                        unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(stu_term)))
+                else:
+                    INFO(u"Delete student money info success!user: %s, stu_id: %s, stu_term: %s" % (
+                        unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(stu_term)))
                 status1 = delete_addmoney(stu_id, stu_term)
                 if status1 == 1:
                     stu_id_list1.append((stu_id, stu_term))
+                    ERROR(u"Delete student money details info failed!user: %s, stu_id: %s, stu_term: %s" % (
+                        unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(stu_term)))
+                else:
+                    INFO(u"Delete student money details info success!user: %s, stu_id: %s, stu_term: %s" % (
+                        unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(stu_term)))
             i = i + 1
         if len(stu_id_list) == 0 and len(stu_id_list1) == 0:
             showMessageDialog(self, u"删除学生缴费信息成功！")

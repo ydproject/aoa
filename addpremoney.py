@@ -126,6 +126,7 @@ class AddPreMoney(QtGui.QWidget):
             return 0
         old_list = Sql("stu_money_pre").select({u"学号": self.lineEdit0.text()})
         if len(old_list) == 0:
+            new_list = [self.lineEdit0.text(), str(total)]
             status = Sql("stu_money_pre").add(values)
         else:
             old_list = old_list[0]
@@ -133,10 +134,14 @@ class AddPreMoney(QtGui.QWidget):
             status = Sql("stu_money_pre").update(old_list, new_list)
         if status == 1:
             showWarnDialog(self, u"缴费失败！")
+            ERROR(u"Add student prepare money failed! user: %s, stu_id: %s, values: %s" % (
+                unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(new_list)))
             Sql("flow_money_sel").delete(num)
             return 0
         else:
             showMessageDialog(self, u"缴费成功！")
+            INFO(u"Add student prepare money success!user: %s, stu_id: %s, values: %s" % (
+                unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(new_list)))
             if self.stu_id == "":
                 self.reset()
             else:

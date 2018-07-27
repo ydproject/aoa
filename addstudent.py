@@ -2,6 +2,7 @@
 from PyQt4 import QtCore, QtGui
 import sys
 from util import *
+from log import INFO, ERROR
 
 
 class AddStudent(QtGui.QWidget):
@@ -117,8 +118,10 @@ class AddStudent(QtGui.QWidget):
         values = [get_stu_id()] + values
         status = Sql().add(values)
         if status == 1:
+            ERROR(u"Add student info failed! user: %s" % unicode(query_current_user()[1]))
             showWarnDialog(self, u"添加学生信息失败！")
         else:
+            INFO(u"Add student info success!user: %s, values: %s" % (unicode(query_current_user()[1]), unicode(values)))
             showMessageDialog(self, u"添加学生信息成功！")
             self.clears()
             if self.faWindows != None:

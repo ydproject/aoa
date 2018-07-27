@@ -156,8 +156,11 @@ class AddMoney(QtGui.QWidget):
             values.append(value)
         total = sum(map(str_to_sum, values[2:]))
         pre_info = Sql("stu_money_pre").select({u"学号": self.lineEdit0.text()})
+        pre_before = u"0.0"
+        pre_end = u"0.0"
         if len(pre_info) == 0:
             premoney = 0.0
+            Sql("stu_money_pre").add([self.lineEdit0.text(), unicode(pre_end)])
         else:
             premoney = float(pre_info[0][1])
             ask_info = showComfirmDialog(self, u"是否抵扣预收款？ %8.2f" % premoney)
@@ -165,7 +168,6 @@ class AddMoney(QtGui.QWidget):
                 premoney = 0.0
             else:
                 pre_before = unicode(premoney)
-                pre_end = u"0.0"
                 if total >= premoney:
                     pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
                 else:
@@ -173,7 +175,7 @@ class AddMoney(QtGui.QWidget):
                     pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
                     premoney = total
                 if pre_status != 0:
-                    pre_end = unicode(premoney)
+                    pre_end = pre_before
                     premoney = 0.0
                     showWarnDialog(self, u"抵扣预收费失败！")
 
@@ -190,12 +192,16 @@ class AddMoney(QtGui.QWidget):
         if num == -1:
             Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
             showWarnDialog(self, u"缴费失败！")
+            ERROR(u"Add student money failed! user: %s, stu_id: %s" % (
+            unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
             return 0
         status = Sql("stu_money_info").add(values)
         if status == 1:
             Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
             Sql("flow_money_sel").delete(num)
             showWarnDialog(self, u"缴费失败！")
+            ERROR(u"Add student money failed! user: %s, stu_id: %s" % (
+            unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
             return 0
         status1 = stu_addmoney_add(values)
         if status1 == 1:
@@ -203,8 +209,12 @@ class AddMoney(QtGui.QWidget):
             Sql("flow_money_sel").delete(num)
             Sql("stu_money_info").delete(self.lineEdit0.text())
             showWarnDialog(self, u"缴费失败！")
+            ERROR(u"Add student money failed! user: %s, stu_id: %s" % (
+            unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
         else:
             showMessageDialog(self, u"缴费成功！")
+            INFO(u"Add student money success!user: %s, stu_id: %s, values: %s" % (
+            unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(values)))
             if self.stu_id == "":
                 self.reset()
             else:
