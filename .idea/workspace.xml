@@ -17,7 +17,7 @@
     <SUITE FILE_PATH="coverage/aoa$changeuser.coverage" NAME="changeuser Coverage Results" MODIFIED="1532746639618" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$log.coverage" NAME="log Coverage Results" MODIFIED="1532611552986" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$flowingmoney.coverage" NAME="flowingmoney Coverage Results" MODIFIED="1532743496128" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/aoa$util.coverage" NAME="util Coverage Results" MODIFIED="1532747894501" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/aoa$util.coverage" NAME="util Coverage Results" MODIFIED="1532756357199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$selcourse.coverage" NAME="selcourse Coverage Results" MODIFIED="1528988386053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$test.coverage" NAME="test Coverage Results" MODIFIED="1529122855571" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$editmoney.coverage" NAME="editmoney Coverage Results" MODIFIED="1532745729656" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -28,7 +28,7 @@
     <SUITE FILE_PATH="coverage/aoa$selstudent.coverage" NAME="selstudent Coverage Results" MODIFIED="1532746996828" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$test2.coverage" NAME="test2 Coverage Results" MODIFIED="1529132981610" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$editpremoney.coverage" NAME="editpremoney Coverage Results" MODIFIED="1532328493093" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/aoa$run.coverage" NAME="run Coverage Results" MODIFIED="1532748280468" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/aoa$run.coverage" NAME="run Coverage Results" MODIFIED="1532759311030" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$denglu.coverage" NAME="denglu Coverage Results" MODIFIED="1529827025450" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$preaddmoney.coverage" NAME="preaddmoney Coverage Results" MODIFIED="1532743201314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aoa$adduser.coverage" NAME="adduser Coverage Results" MODIFIED="1532746399265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -36,14 +36,72 @@
     <SUITE FILE_PATH="coverage/aoa$selmoney.coverage" NAME="selmoney Coverage Results" MODIFIED="1532742665392" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="run.py" pinned="false" current-in-tab="true">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file leaf-file-name="run.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="644">
-              <caret line="47" column="17" lean-forward="true" selection-start-line="47" selection-start-column="17" selection-end-line="47" selection-end-column="17" />
+            <state relative-caret-position="360">
+              <caret line="135" column="19" lean-forward="true" selection-start-line="135" selection-start-column="19" selection-end-line="135" selection-end-column="19" />
               <folding>
                 <element signature="e#24#34#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="changeuser.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/changeuser.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="104" column="22" lean-forward="true" selection-start-line="104" selection-start-column="22" selection-end-line="104" selection-end-column="22" />
+              <folding>
+                <element signature="e#24#55#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="selmoney.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/selmoney.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="472">
+              <caret line="270" column="34" lean-forward="false" selection-start-line="270" selection-start-column="34" selection-end-line="270" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="editmoney.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/editmoney.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="498">
+              <caret line="244" column="32" lean-forward="true" selection-start-line="244" selection-start-column="32" selection-end-line="244" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="util.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/util.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="358">
+              <caret line="657" column="19" lean-forward="true" selection-start-line="657" selection-start-column="19" selection-end-line="657" selection-end-column="19" />
+              <folding>
+                <marker date="1532759273803" expanded="true" signature="5634:5653" ph="create table... missing_value" />
+                <marker date="1532759273803" expanded="true" signature="6347:6361" ph="select * fro... missing_value" />
+                <marker date="1532759273803" expanded="true" signature="6624:6657" ph="alter table missing_value... " />
+                <marker date="1532759273803" expanded="true" signature="7045:7088" ph="select * fro... sqlite_master" />
+                <marker date="1532759273803" expanded="true" signature="8048:8063" ph="select missi... missing_value" />
+                <marker date="1532759273803" expanded="true" signature="9036:9051" ph="select missi... missing_value" />
+                <marker date="1532759273803" expanded="true" signature="9925:9954" ph="insert into missing_value... " />
+                <marker date="1532759273803" expanded="true" signature="10891:10926" ph="update missing_value... " />
+                <marker date="1532759273803" expanded="true" signature="11557:11585" ph="delete from missing_value... " />
+                <marker date="1532759273803" expanded="true" signature="12733:12824" ph="select missi... stu_base_info" />
+                <marker date="1532759273803" expanded="true" signature="14085:14168" ph="select missi... stu_base_info" />
+                <marker date="1532759273803" expanded="true" signature="15325:15410" ph="select missi... stu_base_info" />
+                <marker date="1532759273803" expanded="true" signature="16596:16636" ph="delete from missing_value... " />
+                <marker date="1532759273803" expanded="true" signature="17218:17258" ph="delete from missing_value... " />
+                <marker date="1532759273803" expanded="true" signature="17870:17963" ph="update missing_value... " />
               </folding>
             </state>
           </provider>
@@ -99,7 +157,6 @@
         <option value="$PROJECT_DIR$/config/stu_selmoney_info.txt" />
         <option value="$PROJECT_DIR$/config/stu_select_info.txt" />
         <option value="$PROJECT_DIR$/config/stu_base_info.txt" />
-        <option value="$PROJECT_DIR$/requirement.txt" />
         <option value="$PROJECT_DIR$/config/flow_money_sel.txt" />
         <option value="$PROJECT_DIR$/config/log_info.txt" />
         <option value="$PROJECT_DIR$/run.log" />
@@ -112,15 +169,16 @@
         <option value="$PROJECT_DIR$/addstudent.py" />
         <option value="$PROJECT_DIR$/adduser.py" />
         <option value="$PROJECT_DIR$/changepasswd.py" />
-        <option value="$PROJECT_DIR$/changeuser.py" />
         <option value="$PROJECT_DIR$/editbymoney.py" />
         <option value="$PROJECT_DIR$/editmoney.py" />
         <option value="$PROJECT_DIR$/editpremoney.py" />
         <option value="$PROJECT_DIR$/editstudent.py" />
         <option value="$PROJECT_DIR$/flowingmoney.py" />
         <option value="$PROJECT_DIR$/preaddmoney.py" />
-        <option value="$PROJECT_DIR$/util.py" />
+        <option value="$PROJECT_DIR$/changeuser.py" />
         <option value="$PROJECT_DIR$/run.py" />
+        <option value="$PROJECT_DIR$/requirement.txt" />
+        <option value="$PROJECT_DIR$/util.py" />
       </list>
     </option>
   </component>
@@ -151,8 +209,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -164,13 +220,15 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../aoa_py3" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -345,17 +403,17 @@
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32690763" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2570281" sideWeight="0.5255591" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2570281" sideWeight="0.4744409" order="2" side_tool="false" content_ui="tabs" x="0" y="232" width="1366" height="264" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32851407" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32690763" sideWeight="0.49092284" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32690763" sideWeight="0.49092284" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2570281" sideWeight="0.4744409" order="2" side_tool="false" content_ui="tabs" x="0" y="232" width="1366" height="264" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32128513" sideWeight="0.49840257" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.08426517" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0850639" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24096386" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24096386" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -385,7 +443,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/modifystu.py" />
     <entry file="file://$USER_HOME$/.PyCharm2017.3/system/python_stubs/-762174762/PyQt4/QtGui/QAbstractButton.py" />
     <entry file="file://$PROJECT_DIR$/test2.py" />
     <entry file="file://$USER_HOME$/.PyCharm2017.3/system/python_stubs/-762174762/PyQt4/QtGui/QLayout.py" />
@@ -548,14 +605,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/selmoney.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="161" column="36" lean-forward="true" selection-start-line="161" selection-start-column="36" selection-end-line="161" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addmoney.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
@@ -568,7 +617,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
           <caret line="104" column="63" lean-forward="false" selection-start-line="104" selection-start-column="63" selection-end-line="104" selection-end-column="63" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -576,14 +624,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
           <caret line="96" column="63" lean-forward="false" selection-start-line="96" selection-start-column="63" selection-end-line="96" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/changeuser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="80" column="63" lean-forward="false" selection-start-line="80" selection-start-column="63" selection-end-line="80" selection-end-column="63" />
           <folding />
         </state>
       </provider>
@@ -612,19 +652,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editmoney.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="149" column="63" lean-forward="false" selection-start-line="149" selection-start-column="63" selection-end-line="149" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/editpremoney.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
           <caret line="95" column="63" lean-forward="false" selection-start-line="95" selection-start-column="63" selection-end-line="95" selection-end-column="63" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -632,7 +663,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
           <caret line="91" column="63" lean-forward="false" selection-start-line="91" selection-start-column="63" selection-end-line="91" selection-end-column="63" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -668,39 +698,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/requirement.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="10" column="12" lean-forward="true" selection-start-line="10" selection-start-column="12" selection-end-line="10" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="728" column="0" lean-forward="true" selection-start-line="728" selection-start-column="0" selection-end-line="728" selection-end-column="0" />
-          <folding>
-            <element signature="e#25#39#0" expanded="false" />
-            <marker date="1532748067857" expanded="true" signature="5634:5653" ph="create table... missing_value" />
-            <marker date="1532748067857" expanded="true" signature="6347:6361" ph="select * fro... missing_value" />
-            <marker date="1532748067857" expanded="true" signature="6624:6657" ph="alter table missing_value... " />
-            <marker date="1532748067857" expanded="true" signature="7045:7088" ph="select * fro... sqlite_master" />
-            <marker date="1532748067857" expanded="true" signature="8048:8063" ph="select missi... missing_value" />
-            <marker date="1532748067857" expanded="true" signature="9036:9051" ph="select missi... missing_value" />
-            <marker date="1532748067857" expanded="true" signature="9925:9954" ph="insert into missing_value... " />
-            <marker date="1532748067857" expanded="true" signature="10891:10926" ph="update missing_value... " />
-            <marker date="1532748067857" expanded="true" signature="11557:11585" ph="delete from missing_value... " />
-            <marker date="1532748067857" expanded="true" signature="12733:12824" ph="select missi... stu_base_info" />
-            <marker date="1532748067857" expanded="true" signature="14085:14168" ph="select missi... stu_base_info" />
-            <marker date="1532748067857" expanded="true" signature="15325:15410" ph="select missi... stu_base_info" />
-            <marker date="1532748067857" expanded="true" signature="16596:16636" ph="delete from missing_value... " />
-            <marker date="1532748067857" expanded="true" signature="17218:17258" ph="delete from missing_value... " />
-            <marker date="1532748067857" expanded="true" signature="17870:17963" ph="update missing_value... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/selstudent.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -709,12 +706,71 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../aoa - 副本/py_to_exe.py" />
+    <entry file="file://$PROJECT_DIR$/selmoney.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="270" column="34" lean-forward="false" selection-start-line="270" selection-start-column="34" selection-end-line="270" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/run.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="644">
-          <caret line="47" column="17" lean-forward="true" selection-start-line="47" selection-start-column="17" selection-end-line="47" selection-end-column="17" />
+        <state relative-caret-position="360">
+          <caret line="135" column="19" lean-forward="true" selection-start-line="135" selection-start-column="19" selection-end-line="135" selection-end-column="19" />
           <folding>
             <element signature="e#24#34#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/changeuser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="104" column="22" lean-forward="true" selection-start-line="104" selection-start-column="22" selection-end-line="104" selection-end-column="22" />
+          <folding>
+            <element signature="e#24#55#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirement.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="12" column="31" lean-forward="true" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editmoney.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="498">
+          <caret line="244" column="32" lean-forward="true" selection-start-line="244" selection-start-column="32" selection-end-line="244" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="358">
+          <caret line="657" column="19" lean-forward="true" selection-start-line="657" selection-start-column="19" selection-end-line="657" selection-end-column="19" />
+          <folding>
+            <marker date="1532759273803" expanded="true" signature="5634:5653" ph="create table... missing_value" />
+            <marker date="1532759273803" expanded="true" signature="6347:6361" ph="select * fro... missing_value" />
+            <marker date="1532759273803" expanded="true" signature="6624:6657" ph="alter table missing_value... " />
+            <marker date="1532759273803" expanded="true" signature="7045:7088" ph="select * fro... sqlite_master" />
+            <marker date="1532759273803" expanded="true" signature="8048:8063" ph="select missi... missing_value" />
+            <marker date="1532759273803" expanded="true" signature="9036:9051" ph="select missi... missing_value" />
+            <marker date="1532759273803" expanded="true" signature="9925:9954" ph="insert into missing_value... " />
+            <marker date="1532759273803" expanded="true" signature="10891:10926" ph="update missing_value... " />
+            <marker date="1532759273803" expanded="true" signature="11557:11585" ph="delete from missing_value... " />
+            <marker date="1532759273803" expanded="true" signature="12733:12824" ph="select missi... stu_base_info" />
+            <marker date="1532759273803" expanded="true" signature="14085:14168" ph="select missi... stu_base_info" />
+            <marker date="1532759273803" expanded="true" signature="15325:15410" ph="select missi... stu_base_info" />
+            <marker date="1532759273803" expanded="true" signature="16596:16636" ph="delete from missing_value... " />
+            <marker date="1532759273803" expanded="true" signature="17218:17258" ph="delete from missing_value... " />
+            <marker date="1532759273803" expanded="true" signature="17870:17963" ph="update missing_value... " />
           </folding>
         </state>
       </provider>

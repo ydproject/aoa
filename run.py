@@ -64,12 +64,13 @@ class MainWindow(QtGui.QMainWindow):
         file = menubar.addMenu(u'帮助')
         file.addAction(exit)
 
+        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
+
         self.initUI()
 
     def initUI(self):
         self.auth = query_current_user()
         self.setWindowTitle(u'学生信息管理系统(用户：%s)' % self.auth[1])
-        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         if self.auth[2] == "Guest":
             self.addstu.setDisabled(True)
         else:

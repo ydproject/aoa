@@ -11,6 +11,12 @@
 10.excel导入导出
 11.界面美化
 12.交费流水按照 人员信息可查询， 流水表写入人员的关键信息
+13.导入导出文件路径有中文的问题，编译之后无法处理
+
+C:\Python27\Scripts\pyinstaller.exe -F run.py
+C:\Python27\Scripts\pyinstaller.exe --clean --win-private-assemblies -F run.py  --hidden-import=pandas._libs.tslibs.timedeltas
+C:\Python27\Scripts\pyinstaller.exe --clean --win-private-assemblies -F run.py --hidden-import=pandas
+C:\Python27\Scripts\pyinstaller.exe -F run.py --hidden-import=pandas._libs.tslibs.timedeltas
 
 pip install matplotlib -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
 pip install numpy -i http://pypi.douban.com/simple --trusted-host pypi.douban.com

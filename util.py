@@ -647,7 +647,7 @@ def choose_dirname():
     root = Tkinter.Tk()
     root.withdraw()
     options = {}
-    options['initialdir'] = os.path.join(os.getcwd(), u"download")
+    options['initialdir'] = os.path.join(os.getcwd().decode("utf8"), u"download")
     dir_name = tkFileDialog.askdirectory(**options)
     DEBUG(u"Choose dirname,return: %s" % unicode(dir_name))
     return dir_name
@@ -658,7 +658,7 @@ def choose_filepath():
     root.withdraw()
     options = {}
     options['defaultextension'] = '.xls'
-    options['initialdir'] = os.path.join(os.getcwd(), u"download")
+    options['initialdir'] = os.path.join(os.getcwd().decode("utf8"), u"download")
     options['filetypes'] = [('Excel files', '*.xls'), ('all files', '.*')]
     filepath = tkFileDialog.askopenfilename(**options)
     DEBUG(u"Choose filepath,return: %s" % unicode(filepath))
@@ -670,7 +670,7 @@ def save_file():
     root.withdraw()
     options = {}
     options['defaultextension'] = '.xls'
-    options['initialdir'] = os.path.join(os.getcwd(), u"download")
+    options['initialdir'] = os.path.join(os.getcwd().decode("utf8"), u"download")
     options['initialfile'] = '%d.xls' % int(time.time())
     options['filetypes'] = [('all files', '.*'), ('Excel files', '*.xls')]
     filepath = tkFileDialog.asksaveasfilename(**options)
@@ -752,9 +752,9 @@ if __name__ == '__main__':
     # get_flag_list("stu_addmoney_info", u"班级")
     # print choose_dirname()
     # tkFileDialog.asksaveasfilename(**self.file_opt)
-    # print read_xls(os.path.join(os.getcwd(), "download", "test.xls"))
+    print read_xls(os.path.join(os.getcwd(), "download", "test.xls"))
     # print choose_filepath()
-    # print showInputDialog()
-    im = Image.open("icon/start.png")  # 返回一个Image对象
-    print im.size
-    print('宽：%d,高：%d' % (im.size[0], im.size[1]))
+    # # print showInputDialog()
+    # im = Image.open("icon/start.png")  # 返回一个Image对象
+    # print im.size
+    # print('宽：%d,高：%d' % (im.size[0], im.size[1]))
