@@ -29,6 +29,7 @@ class FlowingMoney(QtGui.QWidget):
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
         self.tableWidget.setColumnWidth(5, 180)
+        self.tableWidget.setFixedWidth(1000)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         sum = 0
@@ -56,11 +57,13 @@ class FlowingMoney(QtGui.QWidget):
                 label = QtGui.QLabel(items)
                 self.label_list.append(label)
                 edits = QtGui.QLineEdit()
+                edits.setFixedWidth(150)
                 self.value_list.append(edits)
             if str(items_value[0]) == "2":
                 label = QtGui.QLabel(items)
                 self.label_list.append(label)
                 edits = QtGui.QComboBox()
+                edits.setFixedWidth(150)
                 edits.addItem("")
                 for item in get_flag_list("flow_money_sel", items):
                     edits.addItem(item)
@@ -69,23 +72,28 @@ class FlowingMoney(QtGui.QWidget):
         self.startTime = QtCore.QDateTime(QtCore.QDate(1999, 1, 1), QtCore.QTime(0, 0, 0))
         self.begin_label = QtGui.QLabel(u"开始时间:")
         self.begin_edit = QtGui.QDateTimeEdit(self.startTime)
+        self.begin_edit.setFixedWidth(160)
         self.end_label = QtGui.QLabel(u"结束时间:")
         self.end_edit = QtGui.QDateTimeEdit(QtCore.QDateTime(get_tommor_date(), QtCore.QTime(0, 0, 0)))
+        self.end_edit.setFixedWidth(160)
 
         self.sum_info = QtGui.QLabel(u"收入：%12.2f，支出：%12.2f， 合计：%12.2f元" % (add_sum, add_sum-sum, sum))
 
         # 按钮控件
         selectButton = QtGui.QPushButton(frame)
         selectButton.setText(u'查询')
+        selectButton.setFixedWidth(80)
         QtCore.QObject.connect(selectButton, QtCore.SIGNAL("clicked()"), self.sels)
 
 
         clearButton = QtGui.QPushButton(frame)
         clearButton.setText(u'清空')
+        clearButton.setFixedWidth(80)
         QtCore.QObject.connect(clearButton, QtCore.SIGNAL("clicked()"), self.clears)
 
         exportButton = QtGui.QPushButton(frame)
         exportButton.setText(u'导出')
+        exportButton.setFixedWidth(80)
         QtCore.QObject.connect(exportButton, QtCore.SIGNAL("clicked()"), self.export)
         if query_current_user()[2] != "Admin":
             exportButton.setDisabled(True)
@@ -95,6 +103,8 @@ class FlowingMoney(QtGui.QWidget):
         #布局vlayout = QtGui.QVBoxLayout()
         grid1 = QtGui.QGridLayout()
         grid1.setSpacing(10)
+        grid1.setColumnStretch(200, 200)
+        grid1.setAlignment(QtCore.Qt.AlignLeft)
 
         i = 0
         x = 1
@@ -118,6 +128,8 @@ class FlowingMoney(QtGui.QWidget):
 
         grid2 = QtGui.QGridLayout()
         grid2.setSpacing(10)
+        grid2.setColumnStretch(200, 200)
+        grid2.setAlignment(QtCore.Qt.AlignLeft)
         grid2.addWidget(selectButton, 1, 0)
         grid2.addWidget(clearButton, 1, 1)
         grid2.addWidget(exportButton, 1, 2)
@@ -126,6 +138,7 @@ class FlowingMoney(QtGui.QWidget):
 
         grid3 = QtGui.QGridLayout()
         grid3.setSpacing(10)
+        grid3.setAlignment(QtCore.Qt.AlignLeft)
         grid3.addWidget(self.tableWidget, 3, 0, 5, 0)
 
 
@@ -139,6 +152,7 @@ class FlowingMoney(QtGui.QWidget):
 
         self.resize(1000, 1000)
         self.setWindowTitle(u'查询交易流水')
+        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
 
     def export(self):

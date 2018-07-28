@@ -30,6 +30,7 @@ class SelStudent(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
+        self.tableWidget.setFixedWidth(1000)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         for row in stuInfo:
@@ -48,11 +49,14 @@ class SelStudent(QtGui.QWidget):
         self.value_list = []
         for items, items_value in self.select_infos:
             label = QtGui.QLabel(items)
+            label.setFixedWidth(60)
             self.label_list.append(label)
             if str(items_value[0]) == "1":
                 edits = QtGui.QLineEdit()
+                edits.setFixedWidth(150)
             else:
                 edits = QtGui.QComboBox()
+                edits.setFixedWidth(150)
                 edits.addItem("")
                 for item in get_flag_list("stu_base_info", items):
                     edits.addItem(item)
@@ -62,10 +66,12 @@ class SelStudent(QtGui.QWidget):
         # 按钮控件
         selectButton = QtGui.QPushButton(frame)
         selectButton.setText(u'查询')
+        selectButton.setFixedWidth(80)
         QtCore.QObject.connect(selectButton, QtCore.SIGNAL("clicked()"), self.sels)
 
         addButton = QtGui.QPushButton(frame)
         addButton.setText(u'新增')
+        addButton.setFixedWidth(80)
         QtCore.QObject.connect(addButton, QtCore.SIGNAL("clicked()"), self.adds)
         if query_current_user()[2] == "Guest":
             addButton.setDisabled(True)
@@ -74,6 +80,7 @@ class SelStudent(QtGui.QWidget):
 
         modifyButton = QtGui.QPushButton(frame)
         modifyButton.setText(u'编辑')
+        modifyButton.setFixedWidth(80)
         QtCore.QObject.connect(modifyButton, QtCore.SIGNAL("clicked()"), self.edits)
         if query_current_user()[2] == "Guest":
             modifyButton.setDisabled(True)
@@ -82,6 +89,7 @@ class SelStudent(QtGui.QWidget):
 
         deleteButton = QtGui.QPushButton(frame)
         deleteButton.setText(u'删除')
+        deleteButton.setFixedWidth(80)
         QtCore.QObject.connect(deleteButton, QtCore.SIGNAL("clicked()"), self.dels)
         if query_current_user()[2] != "Admin":
             deleteButton.setDisabled(True)
@@ -90,10 +98,12 @@ class SelStudent(QtGui.QWidget):
 
         clearButton = QtGui.QPushButton(frame)
         clearButton.setText(u'清空')
+        clearButton.setFixedWidth(80)
         QtCore.QObject.connect(clearButton, QtCore.SIGNAL("clicked()"), self.clears)
 
         exportButton = QtGui.QPushButton(frame)
         exportButton.setText(u'导出')
+        exportButton.setFixedWidth(80)
         QtCore.QObject.connect(exportButton, QtCore.SIGNAL("clicked()"), self.export)
         if query_current_user()[2] != "Admin":
             exportButton.setDisabled(True)
@@ -102,11 +112,14 @@ class SelStudent(QtGui.QWidget):
 
         importButton = QtGui.QPushButton(frame)
         importButton.setText(u'导入')
+        importButton.setFixedWidth(80)
         QtCore.QObject.connect(importButton, QtCore.SIGNAL("clicked()"), self.import_excel)
 
         #布局vlayout = QtGui.QVBoxLayout()
         grid1 = QtGui.QGridLayout()
         grid1.setSpacing(10)
+        grid1.setColumnStretch(200,200)
+        grid1.setAlignment(QtCore.Qt.AlignLeft)
 
         i = 0
         x = 1
@@ -123,6 +136,8 @@ class SelStudent(QtGui.QWidget):
 
         grid2 = QtGui.QGridLayout()
         grid2.setSpacing(10)
+        grid2.setColumnStretch(200, 200)
+        grid2.setAlignment(QtCore.Qt.AlignLeft)
         grid2.addWidget(selectButton, 1, 0)
         grid2.addWidget(clearButton, 1, 1)
         grid2.addWidget(addButton, 1, 2)
@@ -134,8 +149,9 @@ class SelStudent(QtGui.QWidget):
 
         grid3 = QtGui.QGridLayout()
         grid3.setSpacing(10)
-        grid3.addWidget(self.tableWidget, 3, 0, 5, 0)
-
+        grid3.setAlignment(QtCore.Qt.AlignLeft)
+        # grid3.addWidget(self.tableWidget, 3, 0, 5, 0)
+        grid3.addWidget(self.tableWidget, 0, 1)
         vlayout = QtGui.QVBoxLayout()
         vlayout.addLayout(grid1)
         vlayout.addLayout(grid2)
@@ -145,6 +161,7 @@ class SelStudent(QtGui.QWidget):
 
         self.resize(1000, 1000)
         self.setWindowTitle(u'查询学籍信息')
+        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))
 
     def import_excel(self):

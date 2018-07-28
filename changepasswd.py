@@ -25,15 +25,18 @@ class ChangePasswd(QtGui.QWidget):
             if item_value[0] == "":
                 continue
             label = QtGui.QLabel(item_info)
+            label.setFixedWidth(60)
             # label.setFont(font)
             self.label_list.append(label)
             self.null_list.append(str(item_value[0]))
             if str(item_value[0]) == "0" or str(item_value[0]) == "1" or str(item_value[0]) == "2":
                 lineEdit = QtGui.QLineEdit()
+                lineEdit.setFixedWidth(150)
                 if str(item_value[0]) == "2":
                     lineEdit.setEchoMode(QtGui.QLineEdit.Password)
             else:
                 lineEdit = QtGui.QComboBox()
+                lineEdit.setFixedWidth(150)
                 for item in item_value:
                     lineEdit.addItem(item)
             self.value_list.append(lineEdit)
@@ -43,10 +46,12 @@ class ChangePasswd(QtGui.QWidget):
         font2.setPointSize(10)
         pushButton_1.setFont(font2)
         pushButton_1.setText(u'确定修改')
+        pushButton_1.setFixedWidth(80)
         pushButton_2 = QtGui.QPushButton(frame)
         pushButton_2.setGeometry(QtCore.QRect(390, 360, 75, 31))
         # pushButton_2.setFont(font2)
         pushButton_2.setText(u'清空信息')
+        pushButton_2.setFixedWidth(80)
         QtCore.QObject.connect(pushButton_1, QtCore.SIGNAL("clicked()"), self.confirm)
         QtCore.QObject.connect(pushButton_2, QtCore.SIGNAL("clicked()"), self.clears)
 
@@ -55,6 +60,7 @@ class ChangePasswd(QtGui.QWidget):
         grid1 = QtGui.QGridLayout()
         grid1.setAlignment(QtCore.Qt.AlignTop)
         grid1.setSpacing(20)
+        grid1.setColumnStretch(200, 200)
 
         i = 0
         x = 1
@@ -68,6 +74,7 @@ class ChangePasswd(QtGui.QWidget):
         grid2 = QtGui.QGridLayout()
         grid2.setAlignment(QtCore.Qt.AlignCenter)
         grid2.setSpacing(40)
+        grid2.setColumnStretch(200, 200)
         grid2.addWidget(pushButton_1, 1, 1)
         grid2.addWidget(pushButton_2, 1, 3)
 
@@ -77,7 +84,8 @@ class ChangePasswd(QtGui.QWidget):
 
         self.setLayout(vlayout)
         self.setWindowTitle(u'修改用户密码')
-        self.resize(335, 229)
+        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
+        self.resize(235, 150)
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
 
     def clears(self):

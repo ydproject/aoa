@@ -7,6 +7,7 @@ import time, datetime
 import Tkinter, tkFileDialog
 import traceback
 import pandas as pd
+from PIL import Image
 from log import INFO, ERROR, WARN, DEBUG
 
 
@@ -726,6 +727,18 @@ def update_stu(new_lists):
     return error_list
 
 
+def get_pic_size(file_name):
+    w = 500
+    h = 500
+    try:
+        im = Image.open(file_name)
+        w, h = im.size
+    except Exception, e:
+        ERROR(u"Get pic size,file_name: %s can not read: %s" %(file_name, traceback.format_exc()))
+    DEBUG(u"Get pic size,file_name: %s success! return %d %d" % (file_name, w, h))
+    return w, h
+
+
 if __name__ == '__main__':
     # showInputDialog()
     # test = Sql("stu_money_info")
@@ -741,4 +754,7 @@ if __name__ == '__main__':
     # tkFileDialog.asksaveasfilename(**self.file_opt)
     # print read_xls(os.path.join(os.getcwd(), "download", "test.xls"))
     # print choose_filepath()
-    print showInputDialog()
+    # print showInputDialog()
+    im = Image.open("icon/start.png")  # 返回一个Image对象
+    print im.size
+    print('宽：%d,高：%d' % (im.size[0], im.size[1]))

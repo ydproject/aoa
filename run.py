@@ -9,7 +9,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self)
-        self.resize(650, 450)
+        w, h = get_pic_size("icon/start.png")
+        self.resize(w, h)
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon/png_2.png')))
         # 学生信息菜单子菜单
         self.addstu = QtGui.QAction(u'添加学生信息', self)
@@ -68,6 +69,7 @@ class MainWindow(QtGui.QMainWindow):
     def initUI(self):
         self.auth = query_current_user()
         self.setWindowTitle(u'学生信息管理系统(用户：%s)' % self.auth[1])
+        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         if self.auth[2] == "Guest":
             self.addstu.setDisabled(True)
         else:
@@ -143,7 +145,7 @@ if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     main = MainWindow()
     palette = QtGui.QPalette()
-    palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("icon/bkg4.jpg")))
+    palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("icon/start.png")))
     main.setPalette(palette)
     main.show()
     sys.exit(app.exec_())

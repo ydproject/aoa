@@ -27,13 +27,16 @@ class AddPreMoney(QtGui.QWidget):
             if item_value[0] == "":
                 continue
             label = QtGui.QLabel(item_info)
+            label.setFixedWidth(60)
             # label.setFont(font)
             self.label_list.append(label)
             # self.null_list.append(str(item_value[0]))
             if str(item_value[0]) == "0" or str(item_value[0]) == "1":
                 lineEdit = QtGui.QLineEdit()
+                lineEdit.setFixedWidth(150)
             else:
                 lineEdit = QtGui.QComboBox()
+                lineEdit.setFixedWidth(150)
                 for item in item_value:
                     lineEdit.addItem(item)
             self.value_list.append(lineEdit)
@@ -44,10 +47,12 @@ class AddPreMoney(QtGui.QWidget):
         font2.setPointSize(10)
         pushButton_1.setFont(font2)
         pushButton_1.setText(u'确定添加')
+        pushButton_1.setFixedWidth(80)
         pushButton_2 = QtGui.QPushButton(frame)
         pushButton_2.setGeometry(QtCore.QRect(390, 360, 75, 31))
         # pushButton_2.setFont(font2)
         pushButton_2.setText(u'清空信息')
+        pushButton_2.setFixedWidth(80)
         QtCore.QObject.connect(pushButton_1, QtCore.SIGNAL("clicked()"), self.confirm)
         QtCore.QObject.connect(pushButton_2, QtCore.SIGNAL("clicked()"), self.clears)
 
@@ -55,12 +60,15 @@ class AddPreMoney(QtGui.QWidget):
         vlayout = QtGui.QVBoxLayout()
         vlayout.setAlignment(QtCore.Qt.AlignTop)
         grid1 = QtGui.QGridLayout()
+        grid1.setColumnStretch(200, 200)
         grid1.setAlignment(QtCore.Qt.AlignBottom)
         grid1.setSpacing(20)
         number = 5
         x = 1
         label0 = QtGui.QLabel(u"学号")
+        label0.setFixedWidth(60)
         self.lineEdit0 = QtGui.QLineEdit()
+        self.lineEdit0.setFixedWidth(150)
         if self.stu_id != "":
             self.lineEdit0.setText(self.stu_id)
             self.lineEdit0.setDisabled(True)
@@ -85,6 +93,7 @@ class AddPreMoney(QtGui.QWidget):
 
         grid2 = QtGui.QGridLayout()
         grid2.setAlignment(QtCore.Qt.AlignLeft)
+        grid2.setColumnStretch(200, 200)
         grid2.setSpacing(80)
         grid2.addWidget(pushButton_1, 1, 1)
         grid2.addWidget(pushButton_2, 1, 3)
@@ -93,6 +102,7 @@ class AddPreMoney(QtGui.QWidget):
 
         self.setLayout(vlayout)
         self.setWindowTitle(u'预收费信息')
+        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.resize(335, 156)
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
 
@@ -172,7 +182,7 @@ if __name__=="__main__":
     reload(sys)
     sys.setdefaultencoding('utf-8')
     app1 = QtGui.QApplication(sys.argv)
-    MainWindow_1 = AddPreMoney("20180009")
+    MainWindow_1 = AddPreMoney(stu_id = "20180009")
     palette = QtGui.QPalette()
     palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("icon/bkg5.jpg")))
     MainWindow_1.setPalette(palette)

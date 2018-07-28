@@ -93,6 +93,7 @@ class EditPreMoney(QtGui.QWidget):
 
         self.setLayout(vlayout)
         self.setWindowTitle(u'缴费信息')
+        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.resize(335, 156)
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
 

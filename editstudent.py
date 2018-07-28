@@ -25,13 +25,16 @@ class EditStudent(QtGui.QWidget):
         for item_info, item_value in student_info:
             label = QtGui.QLabel(item_info)
             # label.setFont(font)
+            label.setFixedWidth(60)
             self.label_list.append(label)
             self.null_list.append(str(item_value[0]))
             if str(item_value[0]) == "0" or str(item_value[0]) == "1":
                 lineEdit = QtGui.QLineEdit()
                 lineEdit.setText(stu_info[i])
+                lineEdit.setFixedWidth(150)
             else:
                 lineEdit = QtGui.QComboBox()
+                lineEdit.setFixedWidth(150)
                 for item in item_value:
                     lineEdit.addItem(item)
                 lineEdit.setEditText(stu_info[i])
@@ -39,24 +42,27 @@ class EditStudent(QtGui.QWidget):
             self.value_list.append(lineEdit)
         pushButton_1 = QtGui.QPushButton(frame)
         pushButton_1.setGeometry(QtCore.QRect(120, 360, 71, 31))
+        pushButton_1.setFixedWidth(80)
         font2 = QtGui.QFont()
         font2.setPointSize(10)
         pushButton_1.setFont(font2)
         pushButton_1.setText(u'确定')
         pushButton_2 = QtGui.QPushButton(frame)
         pushButton_2.setGeometry(QtCore.QRect(390, 360, 75, 31))
+        pushButton_2.setFixedWidth(80)
         # pushButton_2.setFont(font2)
         pushButton_2.setText(u'清空')
         QtCore.QObject.connect(pushButton_1, QtCore.SIGNAL("clicked()"), self.confirm)
         # QtCore.QObject.connect(pushButton_2, QtCore.SIGNAL("clicked()"), comboBox_1.clear)
-        for value in self.value_list:
-            if not isinstance(value, QtGui.QComboBox):
-                QtCore.QObject.connect(pushButton_2, QtCore.SIGNAL("clicked()"), clear_text(value))
+        QtCore.QObject.connect(pushButton_2, QtCore.SIGNAL("clicked()"), self.clear)
 
         #布局
         vlayout = QtGui.QVBoxLayout()
         grid1 = QtGui.QGridLayout()
-        grid1.setSpacing(40)
+        grid1.setSpacing(20)
+        grid1.setAlignment(QtCore.Qt.AlignTop)
+        grid1.setColumnStretch(200,200)
+        grid1.setAlignment(QtCore.Qt.AlignLeft)
 
         i = 0
         x = 1
@@ -73,6 +79,8 @@ class EditStudent(QtGui.QWidget):
 
         grid2 = QtGui.QGridLayout()
         grid2.setSpacing(80)
+        grid2.setColumnStretch(200, 200)
+        grid2.setAlignment(QtCore.Qt.AlignCenter)
         grid2.addWidget(pushButton_1, 1, 1)
         grid2.addWidget(pushButton_2, 1, 3)
 
@@ -81,8 +89,13 @@ class EditStudent(QtGui.QWidget):
 
         self.setLayout(vlayout)
         self.setWindowTitle(u'编辑学生学籍信息')
-        self.resize(635, 449)
+        self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
+        self.resize(535, 449)
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon','png_3.png')))
+
+    def clear(self):
+        for value in self.value_list:
+            clear_text(value)
 
     def confirm(self):
         values = []
