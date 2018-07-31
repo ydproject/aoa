@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtGui, QtCore
-import addstudent, selstudent, addmoney, selmoney, adduser, changeuser, changepasswd, selectmoney, preaddmoney, flowingmoney
+import addstudent, selstudent, addmoney, selmoney, adduser, changeuser, changepasswd, selectmoney, preaddmoney, flowingmoney, signup
 from util import *
 
 
@@ -13,7 +13,7 @@ class MainWindow(QtGui.QMainWindow):
         self.resize(w, h)
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon/png_2.png')))
         # 学生信息菜单子菜单
-        self.addstu = QtGui.QAction(u'添加学生信息', self)
+        self.addstu = QtGui.QAction(u'学生报名', self)
         self.connect(self.addstu, QtCore.SIGNAL('triggered()'), self.adds)
         self.selstu = QtGui.QAction(u'查询学生信息', self)
         self.connect(self.selstu, QtCore.SIGNAL('triggered()'), self.sels)
@@ -112,7 +112,7 @@ class MainWindow(QtGui.QMainWindow):
         if query_current_user()[2] == "Guest":
             showWarnDialog(self, u"权限不足！")
             return
-        self.addstudent = addstudent.main()
+        self.addstudent = signup.main()
         self.addstudent.show()
 
     def sels(self):

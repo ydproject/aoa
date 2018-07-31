@@ -739,6 +739,23 @@ def get_pic_size(file_name):
     return w, h
 
 
+def get_stu_money(stu_id):
+    money_info = Sql("stu_money_info").select({u"学号": stu_id})
+    if len(money_info) == 0:
+        total = 0.0
+    else:
+        money_info = money_info[0]
+    total = sum(map(str_to_sum, money_info[2:]))
+    DEBUG(u"Get stu money,stu_id: %s success! return %8.2f" % (stu_id, total))
+    return total
+
+
+def get_stu_infos(flag_list=[], stu_name=u""):
+    infos = Sql().select_by_list(flag_list)
+    infos = filter(lambda x: stu_name in x[1], infos)
+    return infos
+
+
 if __name__ == '__main__':
     # showInputDialog()
     # test = Sql("stu_money_info")
@@ -752,9 +769,11 @@ if __name__ == '__main__':
     # get_flag_list("stu_addmoney_info", u"班级")
     # print choose_dirname()
     # tkFileDialog.asksaveasfilename(**self.file_opt)
-    print read_xls(os.path.join(os.getcwd(), "download", "test.xls"))
+    # print read_xls(os.path.join(os.getcwd(), "download", "test.xls"))
     # print choose_filepath()
     # # print showInputDialog()
     # im = Image.open("icon/start.png")  # 返回一个Image对象
     # print im.size
     # print('宽：%d,高：%d' % (im.size[0], im.size[1]))
+    # test = Sql("stu_money_info")
+    get_stu_infos([u"学号",u"姓名",u"联系电话",u"身份证件号码"], u"f")

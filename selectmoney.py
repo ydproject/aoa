@@ -135,6 +135,7 @@ class SelectMoney(QtGui.QWidget):
 
         i = 0
         x = x + 1
+        y = 0
         while i < len(self.label_list_money):
             grid1.addWidget(self.label_list_money[i], x, y)
             grid1.addWidget(self.value_list_money[i], x, y + 1)

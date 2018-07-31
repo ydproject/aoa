@@ -5,10 +5,10 @@ from util import *
 from log import INFO, ERROR
 
 
-class AddStudent(QtGui.QWidget):
+class AddSignUp(QtGui.QWidget):
 
     def __init__(self, object=None):
-        super(AddStudent, self).__init__()
+        super(AddSignUp, self).__init__()
         self.faWindows = object
         frame = QtGui.QFrame(self)
 
@@ -18,7 +18,7 @@ class AddStudent(QtGui.QWidget):
         font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
-        student_info = read_file("stu_base_info.txt")
+        student_info = read_file("add_sign_up_info.txt")
         self.label_list = []
         self.value_list = []
         self.null_list = []
@@ -45,6 +45,8 @@ class AddStudent(QtGui.QWidget):
                 lineEdit.setFixedWidth(150)
                 for item in item_value:
                     lineEdit.addItem(item)
+            if item_info == u"姓名":
+                lineEdit.setText(get_text(self.faWindows.edits))
             self.value_list.append(lineEdit)
         pushButton_1 = QtGui.QPushButton(frame)
         pushButton_1.setGeometry(QtCore.QRect(120, 360, 71, 31))
@@ -95,7 +97,7 @@ class AddStudent(QtGui.QWidget):
         self.setLayout(vlayout)
         self.setWindowTitle(u'添加学生学籍信息')
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
-        self.resize(535, 449)
+        self.resize(535, 700)
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
 
     def clears(self):
@@ -126,7 +128,8 @@ class AddStudent(QtGui.QWidget):
         ask_info = showComfirmDialog(self, u"是否添加该学生信息？")
         if ask_info == 1:
             return 1
-        values = [get_stu_id()] + values
+        stu_id = get_stu_id()
+        values = [stu_id] + values
         status = Sql().add(values)
         if status == 1:
             ERROR(u"Add student info failed! user: %s" % unicode(query_current_user()[1]))
@@ -138,13 +141,14 @@ class AddStudent(QtGui.QWidget):
             if self.faWindows != None:
                 self.close()
                 self.faWindows.sels()
+                self.faWindows.sign_up_by_id(stu_id)
         return 0
 
 
 def main(object=None):
     reload(sys)
     sys.setdefaultencoding('utf-8')
-    MainWindow_1 = AddStudent(object)
+    MainWindow_1 = AddSignUp(object)
     palette = QtGui.QPalette()
     palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("icon/bkg5.jpg")))
     MainWindow_1.setPalette(palette)
@@ -154,14 +158,9 @@ if __name__=="__main__":
     reload(sys)
     sys.setdefaultencoding('utf-8')
     app1 = QtGui.QApplication(sys.argv)
-    MainWindow_1 = AddStudent()
+    MainWindow_1 = AddSignUp()
     palette = QtGui.QPalette()
     palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("icon/bkg5.jpg")))
     MainWindow_1.setPalette(palette)
     MainWindow_1.show()
     sys.exit(app1.exec_())
-
-
-
-
-
