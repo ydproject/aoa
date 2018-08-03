@@ -165,6 +165,7 @@ class Sql():
         try:
             self.cur.execute(sql)
             data = self.cur.fetchall()
+            data.reverse()
         except Exception, e:
             ERROR(u"Select uni,sql: %s failed: %s" % (unicode(sql), traceback.format_exc()))
         self.close()
@@ -246,6 +247,7 @@ class Sql():
                 sql = sql % select_info
             self.cur.execute(sql)
             data = self.cur.fetchall()
+            data.reverse()
             DEBUG(u"Select by list,Sql: %s data: %s" % (sql, unicode(data)))
         except Exception, e:
             ERROR(u"Select by list,Sql: %s failed: %s" %(sql, traceback.format_exc()))
@@ -269,6 +271,7 @@ class Sql():
                 sql = sql % select_info
             self.cur.execute(sql)
             data = self.cur.fetchall()
+            data.reverse()
             DEBUG(u"Select,Sql: %s data: %s" % (sql, unicode(data)))
         except Exception, e:
             ERROR(u"Select,Sql: %s failed: %s" % (sql, traceback.format_exc()))
@@ -294,6 +297,21 @@ class Sql():
             status = 1
         self.close()
         DEBUG(u"Add,return %s" % str(status))
+        return status
+
+    def update_by_stuid(self, stu_id, flag, value):
+        DEBUG(u"Update by stuid,stu_id: %s, flag: %s, value: %s" % (unicode(stu_id), unicode(flag), unicode(value)))
+        status = 0
+        try:
+            sql = u"update %s set %s='%s' where 学号='%s'"% (self.table_name, flag, value, stu_id)
+            self.cur.execute(sql)
+            self.conn.commit()
+            DEBUG(u"Update by stuid,Sql: %s" % sql)
+        except Exception, e:
+            status = 1
+            ERROR(u"Update by stuid,Sql: %s failed: %s" % (sql, traceback.format_exc()))
+        self.close()
+        DEBUG(u"Update by stuide,return %s" % str(status))
         return status
 
     def update(self, old_list, new_list):
@@ -336,6 +354,13 @@ class Sql():
         self.close()
         DEBUG(u"Delete,return %s" % str(status))
         return status
+
+
+def init_stu_term_info():
+    DEBUG(u"Init stu term info.")
+    infos = Sql().select()
+    for info in infos:
+        Sql().update_by_stuid(info[0], u"备注", u"未报到")
 
 
 def select_addmoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}, begin='1999/01/01 00:00:00', end='2100/12/01 00:00:00'):
@@ -691,6 +716,43 @@ def write_xls(file_name, flag_list, infos):
     return status
 
 
+def class_map(class_name):
+    class_map_info = {i:j[0] for i,j in read_file(u"class_map.txt")}
+    if class_map_info.has_key(class_name):
+        return class_map_info[class_name]
+    return u""
+
+
+def address_map(address_info):
+    address_map_info = read_file_dict(u"address_map.txt")
+    for i in range(len(address_info), 0, -1):
+        for j in range(i-1, -1, -1):
+            if address_map_info.has_key(address_info[j:i]):
+                return address_map_info[address_info[j:i]]
+    return u""
+
+
+def read_file_dict(file_name):
+    return {i:j[0] for i,j in read_file(file_name)}
+
+
+def write_xls_by_sort(file_name, flag_list, infos, sort_list):
+    status = 0
+    DEBUG(u"Write xls,file_name: %s, flag_list: %s, infos: %s" % (unicode(file_name), unicode(flag_list), unicode(infos)))
+    try:
+        df = pd.DataFrame(data=infos, columns=flag_list)
+        df[u"班级编码"] = df[u"班级"].map(class_map)
+        df[u"出生所在地"] = df[u"籍贯"].map(address_map)
+        df[u"户口所在地"] = df[u"出生所在地"]
+        df_result = df[sort_list]
+        df_result.to_excel(file_name, index=False)
+    except Exception, e:
+        status = 1
+        ERROR(u"Write xls,failed: %s" % traceback.format_exc())
+    DEBUG(u"Write xls,return: %s" % unicode(status))
+    return status
+
+
 def read_xls(file_name):
     DEBUG(u"Read xls,file_name: %s" % unicode(file_name))
     res = []
@@ -776,4 +838,5 @@ if __name__ == '__main__':
     # print im.size
     # print('宽：%d,高：%d' % (im.size[0], im.size[1]))
     # test = Sql("stu_money_info")
-    get_stu_infos([u"学号",u"姓名",u"联系电话",u"身份证件号码"], u"f")
+    # get_stu_infos([u"学号",u"姓名",u"联系电话",u"身份证件号码"], u"f")
+    print init_stu_term_info()

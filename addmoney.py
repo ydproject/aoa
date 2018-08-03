@@ -223,8 +223,12 @@ class AddMoney(QtGui.QWidget):
             unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
         else:
             showMessageDialog(self, u"缴费成功！")
+            res = Sql().update_by_stuid(self.lineEdit0.text(), u"备注", u"已报到")
+            if res == 1:
+                showWarnDialog(self, u"学籍信息中写入'已报到'信息失败，编辑学籍信息中手动输入！")
             INFO(u"Add student money success!user: %s, stu_id: %s, values: %s" % (
             unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(values)))
+
             if self.stu_id == "":
                 self.reset()
             else:

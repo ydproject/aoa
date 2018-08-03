@@ -15,8 +15,10 @@ class MainWindow(QtGui.QMainWindow):
         # 学生信息菜单子菜单
         self.addstu = QtGui.QAction(u'学生报名', self)
         self.connect(self.addstu, QtCore.SIGNAL('triggered()'), self.adds)
-        self.selstu = QtGui.QAction(u'查询学生信息', self)
+        self.selstu = QtGui.QAction(u'学生信息查询', self)
         self.connect(self.selstu, QtCore.SIGNAL('triggered()'), self.sels)
+        self.exportstu = QtGui.QAction(u'初始化学籍', self)
+        self.connect(self.exportstu, QtCore.SIGNAL('triggered()'), self.export_stu)
         # 缴费信息菜单子菜单
         self.addmoney = QtGui.QAction(u'首次缴费', self)
         self.connect(self.addmoney, QtCore.SIGNAL('triggered()'), self.addm)
@@ -45,6 +47,7 @@ class MainWindow(QtGui.QMainWindow):
         file1 = menubar1.addMenu(u'学籍信息管理')
         file1.addAction(self.addstu)
         file1.addAction(self.selstu)
+        file1.addAction(self.exportstu)
         # 缴费信息菜单栏
         menubar5 = self.menuBar()
         file5 = menubar5.addMenu(u'缴费信息管理')
@@ -79,6 +82,10 @@ class MainWindow(QtGui.QMainWindow):
             self.adduser.setDisabled(True)
         else:
             self.adduser.setDisabled(False)
+        if self.auth[2] != "Admin":
+            self.exportstu.setDisabled(True)
+        else:
+            self.exportstu.setDisabled(False)
         if self.auth[2] == "Guest":
             self.addmoney.setDisabled(True)
         else:
@@ -89,6 +96,17 @@ class MainWindow(QtGui.QMainWindow):
             self.chpasswd.setDisabled(False)
 
     # 点击按钮响应函数
+    def export_stu(self):
+        showMessageDialog(self, u"初始化学籍信息：将所有学生备注为未报名状态！")
+        res = showComfirmDialog(self, u"初始化学籍信息：将所有学生备注为未报名状态！")
+        if res == 1:
+            return
+        res = showComfirmDialog(self, u"确定要初始化学籍信息？")
+        if res == 1:
+            return
+        init_stu_term_info()
+        showMessageDialog(self, u"初始化完成！")
+
     def flow_money(self):
         self.flowing_money = flowingmoney.main()
         self.flowing_money.show()

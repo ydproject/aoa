@@ -12,9 +12,12 @@
 11.界面美化
 12.交费流水按照 人员信息可查询， 流水表写入人员的关键信息
 13.导入导出文件路径有中文的问题，编译之后无法处理
-14.当前用户使用前进行密码校验，当前用户表中加入密码字段
-15.加入登录界面？
-16.学期末清理并备份未报名学生信息
+14.当前用户使用前进行密码校验，当前用户表中加入密码字段   ---  未做
+15.加入登录界面？   ---  未做
+16.学期末清理并备份未报名学生信息  ---  未做
+17.添加增加班级、增加学费的按钮  --- 未做
+18.统计信息   -- 未做
+19.组件焦点设置  --未做
 
 C:\Python27\Scripts\pyinstaller.exe -F -w run.py
 C:\Python27\Scripts\pyinstaller.exe --clean --win-private-assemblies -F run.py  --hidden-import=pandas._libs.tslibs.timedeltas

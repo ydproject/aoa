@@ -90,7 +90,7 @@ class EditStudent(QtGui.QWidget):
         self.setLayout(vlayout)
         self.setWindowTitle(u'编辑学生学籍信息')
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
-        self.resize(535, 449)
+        self.resize(535, 700)
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon','png_3.png')))
 
     def clear(self):

@@ -191,7 +191,8 @@ class SelStudent(QtGui.QWidget):
             i = i + 1
         if len(stu_info_list) == 0:
             stu_info_list = self.currentTable
-        status = write_xls(file_name, self.flag_list, stu_info_list)
+        write_list = [i for i,j in read_file(u"studentInfo.txt")]
+        status = write_xls_by_sort(file_name, self.flag_list, stu_info_list, write_list)
         if status == 1:
             ERROR(u"Export student info to excel failed! user: %s" % unicode(query_current_user()[1]))
             showWarnDialog(self, u"导出Excel失败！")
