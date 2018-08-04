@@ -39,7 +39,7 @@ class SelectMoney(QtGui.QWidget):
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
-            sum = sum + float(row[6])
+            sum = sum + float(row[7])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
@@ -214,7 +214,7 @@ class SelectMoney(QtGui.QWidget):
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
-            sum = sum + float(row[6])
+            sum = sum + float(row[7])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)

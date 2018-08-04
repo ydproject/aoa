@@ -110,7 +110,7 @@ def flag_to_str(f_list):
 
 
 def read_file(filename):
-    file_info = open(os.path.join(os.getcwd(), "config", filename))
+    file_info = open(os.path.join(os.getcwd().encode("gbk").decode("utf8"), "config", filename))
     infos = []
     for line_info in file_info:
         items = line_info.strip().split(",")
@@ -368,8 +368,8 @@ def select_addmoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}, b
     unicode(value_list1), unicode(value_list2), unicode(dict1), unicode(dict2), begin, end))
     begin = str_to_time(begin)
     end = str_to_time(end)
-    sql = Sql(u"stu_base_info")
-    sql = Sql(u"stu_addmoney_info")
+    Sql("stu_base_info").close()
+    Sql("stu_addmoney_info").close()
     sql = Sql()
     if len(value_list1) == 0 and len(value_list2) == 0:
         label_str = "*"
@@ -397,8 +397,8 @@ def select_addmoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}, b
 def select_premoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
     DEBUG(u"Select premoney by stu,value_list1: %s value_list2: %s dict1: %s dict2: %s" % (
     unicode(value_list1), unicode(value_list2), unicode(dict1), unicode(dict2)))
-    sql = Sql(u"stu_base_info")
-    sql = Sql(u"stu_money_pre")
+    Sql("stu_base_info").close()
+    Sql("stu_money_pre").close()
     sql = Sql()
     if len(value_list1) == 0 and len(value_list2) == 0:
         label_str = "*"
@@ -425,8 +425,8 @@ def select_premoney_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
 def select_money_by_stu(value_list1=[], value_list2=[], dict1={}, dict2={}):
     DEBUG(u"Select money by stu,value_list1: %s value_list2: %s dict1: %s dict2: %s" % (
     unicode(value_list1), unicode(value_list2), unicode(dict1), unicode(dict2)))
-    sql = Sql(u"stu_base_info")
-    sql = Sql(u"stu_money_info")
+    Sql("stu_base_info").close()
+    Sql("stu_money_info").close()
     sql = Sql()
     if len(value_list1) == 0 and len(value_list2) == 0:
         label_str = "*"
@@ -520,7 +520,7 @@ def updata_addmoney(old_list, new_list):
 
 def stu_addmoney_add(values=[]):
     DEBUG(u"Stu addmoney add, values: %s" % unicode(values))
-    db_name = u"stu_addmoney_info"
+    db_name = "stu_addmoney_info"
     #values [(u'20180001', u'201803', u'1200', u'100,100,100', u'60,60,60', u'1200', u'1300')]
     flags = read_file("stu_money_info.txt")
     if len(values) < 2:
@@ -717,14 +717,14 @@ def write_xls(file_name, flag_list, infos):
 
 
 def class_map(class_name):
-    class_map_info = {i:j[0] for i,j in read_file(u"class_map.txt")}
+    class_map_info = {i:j[0] for i,j in read_file("class_map.txt")}
     if class_map_info.has_key(class_name):
         return class_map_info[class_name]
     return u""
 
 
 def address_map(address_info):
-    address_map_info = read_file_dict(u"address_map.txt")
+    address_map_info = read_file_dict("address_map.txt")
     for i in range(len(address_info), 0, -1):
         for j in range(i-1, -1, -1):
             if address_map_info.has_key(address_info[j:i]):
