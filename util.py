@@ -110,7 +110,7 @@ def flag_to_str(f_list):
 
 
 def read_file(filename):
-    file_info = open(os.path.join(os.getcwd().encode("gbk").decode("utf8"), "config", filename))
+    file_info = open(os.path.join(os.getcwd(), "config", filename))
     infos = []
     for line_info in file_info:
         items = line_info.strip().split(",")
