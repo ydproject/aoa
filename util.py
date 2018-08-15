@@ -797,7 +797,7 @@ def stu_addmoney_print(old_values=[], values=[]):
 def write_file(filename, content):
     import codecs
     try:
-        f = codecs.open(os.path.join(os.getcwd(),"backup","%s.html" % filename), "w", "utf-8")
+        f = codecs.open(os.path.join(os.getcwd(),"backup","%s.html" % str(filename)), "w", "utf-8")
         f.write(content)
         f.close()
     except Exception,e:
