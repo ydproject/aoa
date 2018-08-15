@@ -13,7 +13,7 @@ class EditByMoney(QtGui.QWidget):
         frame = QtGui.QFrame(self)
         self.stu_id = stu_id
 
-        self.data = Sql("stu_money_info").select({u"学号": stu_id})[0]
+        self.data = Sql("stu_money_info").select({u"学号": stu_id, u"学期": get_term()})[0]
         self.old_value = sum(map(str_to_sum, self.data[2:]))
 
         #编辑控件
@@ -187,21 +187,21 @@ class EditByMoney(QtGui.QWidget):
             premoney = 0.0
         else:
             premoney = float(pre_info[0][1])
-            ask_info = showComfirmDialog(self, u"是否抵扣预收款？ %8.2f" % premoney)
-            if ask_info == 1:
-                premoney = 0.0
-            else:
-                pre_before = unicode(premoney)
-                if spend >= premoney:
-                    pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
-                else:
-                    pre_end = unicode(premoney - spend)
-                    pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
-                    premoney = spend
-                if pre_status != 0:
-                    pre_end = pre_before
+            if premoney != 0:
+                ask_info = showComfirmDialog(self, u"是否抵扣预收款？ %8.2f" % premoney)
+                if ask_info == 1:
                     premoney = 0.0
-                    showWarnDialog(self, u"抵扣预收费失败！")
+            pre_before = unicode(premoney)
+            if spend >= premoney:
+                pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
+            else:
+                pre_end = unicode(premoney - spend)
+                pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
+                premoney = spend
+            if pre_status != 0:
+                pre_end = pre_before
+                premoney = 0.0
+                showWarnDialog(self, u"抵扣预收费失败！")
 
         ask_info = showComfirmDialog(self, u"合计：%8.2f 元，抵扣预收费：%8.2f 元，需缴纳：%8.2f 元，确认缴费？" % (spend, premoney, spend - premoney))
         if ask_info == 1:
@@ -216,16 +216,17 @@ class EditByMoney(QtGui.QWidget):
         num = add_flowing(self, u"%8.2f" % spend, self.lineEdit0.text(), f_str)
         if num == -1:
             Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
-            showWarnDialog(self, u"缴费失败！")
+            showWarnDialog(self, u"%s失败！" % f_str)
             ERROR(u"Edit student money failed! user: %s, stu_id: %s" % (
             unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
             return 0
         status = Sql("stu_money_info").update(list(self.data), values)
+        old_values = list(self.data)
         if status == 1:
             Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
             Sql("flow_money_sel").delete(num)
             self.reset()
-            showWarnDialog(self, u"缴费失败！")
+            showWarnDialog(self, u"%s失败！" % f_str)
             ERROR(u"Edit student money failed! user: %s, stu_id: %s" % (
             unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
             return 1
@@ -234,14 +235,24 @@ class EditByMoney(QtGui.QWidget):
             Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
             Sql("flow_money_sel").delete(num)
             Sql("stu_money_info").update(values, list(self.data))
-            showWarnDialog(self, u"缴费失败！")
+            showWarnDialog(self, u"%s失败！" % f_str)
             ERROR(u"Edit student money failed! user: %s, stu_id: %s" % (
             unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
             self.reset()
         else:
-            showMessageDialog(self, u"缴费成功！")
+            showMessageDialog(self, u"%s成功！" % f_str)
             INFO(u"Edit student money success!user: %s, stu_id: %s, values: %s" % (
             unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(values)))
+            html = u""
+            if spend != 0:
+                res = showComfirmDialog(self, u"是否打印收据？")
+                if res ==0:
+                    try:
+                        html = stu_addmoney_print(old_values, values)
+                        print_html(html)
+                    except Exception,e :
+                        showWarnDialog(self, u"无法打印收据，请手动处理！")
+                        ERROR(u"Print html failed: html:%s error %s" % (html, traceback.format_exc()))
             self.faWindow.sels()
             self.close()
         return 0

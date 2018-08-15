@@ -5,6 +5,7 @@
 
 import sys
 from PyQt4 import QtGui, QtCore
+import selrefund
 from util import *
 
 
@@ -29,7 +30,7 @@ class SelectMoney(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
-        self.tableWidget.setColumnWidth(10, 180)
+        self.tableWidget.setColumnWidth(11, 180)
         self.tableWidget.setFixedWidth(1200)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
@@ -39,7 +40,7 @@ class SelectMoney(QtGui.QWidget):
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
-            sum = sum + float(row[7])
+            sum = sum + float(row[8])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
@@ -95,9 +96,13 @@ class SelectMoney(QtGui.QWidget):
 
 
         modifyButton = QtGui.QPushButton(frame)
-        modifyButton.setText(u'统计')
+        modifyButton.setText(u'退费')
         modifyButton.setFixedWidth(80)
         QtCore.QObject.connect(modifyButton, QtCore.SIGNAL("clicked()"), self.edits)
+        if query_current_user()[2] != "Admin":
+            modifyButton.setDisabled(True)
+        else:
+            modifyButton.setDisabled(False)
 
 
         clearButton = QtGui.QPushButton(frame)
@@ -214,7 +219,7 @@ class SelectMoney(QtGui.QWidget):
             chkBoxItem.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             chkBoxItem.setCheckState(QtCore.Qt.Unchecked)
             self.tableWidget.setItem(i, 0, chkBoxItem)
-            sum = sum + float(row[7])
+            sum = sum + float(row[8])
             for col in range(0, len(row)):
                 v = row[col]
                 item = QtGui.QTableWidgetItem(v)
@@ -240,7 +245,20 @@ class SelectMoney(QtGui.QWidget):
         self.refresh_table(stuInfo)
 
     def edits(self):
-        pass
+        i = 0
+        stu_info_list = []
+        while i < len(self.currentTable):
+            if self.tableWidget.item(i, 0).checkState() == QtCore.Qt.Checked:
+                stu_info_list.append(self.currentTable[i])
+            i = i + 1
+        if len(stu_info_list) == 0:
+            return 0
+        if len(stu_info_list) > 1:
+            showWarnDialog(self, u"只能选择一条记录！")
+            return 1
+        self.refund = selrefund.main(self, stu_info_list[0][0])
+        self.refund.show()
+
 
     def clears(self):
         for value in self.value_list_stu:

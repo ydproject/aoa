@@ -518,6 +518,373 @@ def updata_addmoney(old_list, new_list):
     return status
 
 
+def get_number():
+    number = Sql("number").select_by_list([u"number"],{u"学号":u"0"})[0][0]
+    number = int(number) + 1
+    Sql("number").update_by_stuid(u"0", u"number", unicode(number))
+    return unicode(number)
+
+def stu_addflowing_print(num):
+    flowing_info = Sql("flow_money_sel").select_by_list([u"学号", u"金额", u"备注"],{u"num": num})[0]
+    stu_id = flowing_info[0]
+    stu_name = Sql().select_by_list([u"姓名"],{u"学号": stu_id})
+    if len(stu_name) == 0:
+        stu_name = stu_id
+    else:
+        stu_name = stu_name[0][0]
+    money = flowing_info[1]
+    flag = flowing_info[2]
+    head_html = u"""
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+    <head>
+        <title>成都市双流区阳光幼儿园</title>
+    </head>
+"""
+    day_time = datetime.datetime.today()
+    body_html = u"""
+    <h1 align="center">成都市双流区阳光幼儿园退费票据</h1>
+    <body>
+      <table>
+        <tr>
+          <th width="50%" align="left">客户名称：name</th>
+          <th width="10%" align="left"> year 年</th>
+          <th width="10%" align="left"> month 月</th>
+          <th width="10%" align="left"> day 日</th>
+          <th width="20%" align="left">NO: number </th>
+        </tr>
+      </table>
+      <table border="1" cellspacing="1" cellpadding="0">
+        <tr>
+          <th rowspan=2 width="45%"><font size="4">摘要</font></th>
+          <th rowspan=2 width="5%"><font size="4">单位</font></th>
+          <th rowspan=2 width="5%"><font size="4">数量</font></th>
+          <th rowspan=2 width="10%"><font size="4">单价</font></th>
+          <th colspan=8 width="30%"><font size="4">金额</font></th>
+          <th rowspan=2 width="5%"><font size="4">备注</font></th>
+        </tr>
+        <tr>
+          <th>十</th>
+          <th>万</th>
+          <th>千</th>
+          <th>百</th>
+          <th>十</th>
+          <th>元</th>
+          <th>角</th>
+          <th>分</th>
+        </tr>
+"""
+    number = get_number()
+    body_html = body_html.replace(u"year", str(day_time.year)).replace(u"month", str(day_time.month)).replace(u"day", str(
+        day_time.day)).replace(u"number", number).replace(u"name", stu_name)
+
+    row_html = u""
+
+    row_html_tmp = u"""
+       <tr>
+          <td name="zhaiyao" height="100"><font size="4">%s</font></td>
+          <td name="danwei" height="100"></td>
+          <td name="shuliang" height="100"></td>
+          <td name="danjia" height="100">%s</td>
+          <td name="shiwan" height="100">%s</td>
+          <td name="wan" height="100">%s</td>
+          <td name="qian" height="100">%s</td>
+          <td name="bai" height="100">%s</td>
+          <td name="shi" height="100">%s</td>
+          <td name="yuan" height="100">%s</td>
+          <td name="jiao" height="100">%s</td>
+          <td name="fei" height="100">%s</td>
+          <td name="beizhu" height="100">%s</td>
+        </tr>
+"""
+    out_put_list = out_put_money_list(float(money))
+    out_put_list = [flag, money] + out_put_list + [u"退费"]
+    row_html = row_html + row_html_tmp % tuple(out_put_list)
+    for j in range(0, 14):
+        row_html = row_html + row_html_tmp % (u' ', u' ', u' ', u' ', u' ', u' ', u' ', u' ',u' ',u' ',u' ')
+    row_html_tmp = u"""
+        <tr>
+          <td colspan=4>合计(人民币)：%s 拾 %s 万 %s 仟 %s 佰 %s 拾 %s 元 %s 角 %s 分</td>
+          <td name="shiwan">%s</td>
+          <td name="wan">%s</td>
+          <td name="qian">%s</td>
+          <td name="bai">%s</td>
+          <td name="shi">%s</td>
+          <td name="yuan">%s</td>
+          <td name="jiao">%s</td>
+          <td name="fei">%s</td>
+          <td name="beizhu"><font size="4">%s</font></td>
+        </tr>
+"""
+    money_list = out_put_money_list(float(money))
+    beizhu = u"退费"
+    money_list_ch = out_put_money_list_ch(money_list)
+    row_html = row_html + row_html_tmp % tuple(money_list_ch + money_list + [beizhu])
+    row_html_tmp = u"""
+      </table>
+      <table>
+        <tr>
+          <th width="30%" align="left">填票人：name</th>
+          <th width="30%" align="left">收款人：name</th>
+          <th width="40%" align="left">单位名称(盖章):</th>
+        </tr>
+      </table>
+    </body>
+"""
+    row_html = row_html + row_html_tmp.replace(u"name", query_current_user()[1])
+    blank_line = u"""
+    <br />
+    <br />
+    <br />
+    <hr />
+    <br />
+    <br />
+    <br />
+"""
+    body_html = body_html + row_html
+    end_html = u"""
+</html>
+"""
+    result_html = head_html + body_html + blank_line + body_html + end_html
+    write_file(number, result_html)
+    return result_html
+
+def stu_addmoney_print(old_values=[], values=[]):
+    stu_id = values[0]
+    stu_name = Sql().select_by_list([u"姓名"],{u"学号": stu_id})
+    if len(stu_name) == 0:
+        stu_name = stu_id
+    else:
+        stu_name = stu_name[0][0]
+    head_html = u"""
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+    <head>
+        <title>成都市双流区阳光幼儿园</title>
+    </head>
+"""
+    day_time = datetime.datetime.today()
+    body_html = u"""
+    <h1 align="center">成都市双流区阳光幼儿园收据</h1>
+    <body>
+      <table>
+        <tr>
+          <th width="50%" align="left">客户名称：name</th>
+          <th width="10%" align="left"> year 年</th>
+          <th width="10%" align="left"> month 月</th>
+          <th width="10%" align="left"> day 日</th>
+          <th width="20%" align="left">NO: number </th>
+        </tr>
+      </table>
+      <table border="1" cellspacing="1" cellpadding="0">
+        <tr>
+          <th rowspan=2 width="45%"><font size="4">摘要</font></th>
+          <th rowspan=2 width="5%"><font size="4">单位</font></th>
+          <th rowspan=2 width="5%"><font size="4">数量</font></th>
+          <th rowspan=2 width="10%"><font size="4">单价</font></th>
+          <th colspan=8 width="30%"><font size="4">金额</font></th>
+          <th rowspan=2 width="5%"><font size="4">备注</font></th>
+        </tr>
+        <tr>
+          <th>十</th>
+          <th>万</th>
+          <th>千</th>
+          <th>百</th>
+          <th>十</th>
+          <th>元</th>
+          <th>角</th>
+          <th>分</th>
+        </tr>
+"""
+    number = get_number()
+    body_html = body_html.replace(u"year", str(day_time.year)).replace(u"month", str(day_time.month)).replace(u"day", str(
+        day_time.day)).replace(u"number", number).replace(u"name", stu_name)
+
+    row_html = u""
+
+    row_html_tmp = u"""
+       <tr>
+          <td name="zhaiyao" height="100"><font size="4">%s</font></td>
+          <td name="danwei" height="100"></td>
+          <td name="shuliang" height="100"></td>
+          <td name="danjia" height="100">%s</td>
+          <td name="shiwan" height="100">%s</td>
+          <td name="wan" height="100">%s</td>
+          <td name="qian" height="100">%s</td>
+          <td name="bai" height="100">%s</td>
+          <td name="shi" height="100">%s</td>
+          <td name="yuan" height="100">%s</td>
+          <td name="jiao" height="100">%s</td>
+          <td name="fei" height="100">%s</td>
+          <td name="beizhu" height="100">%s</td>
+        </tr>
+"""
+    status = 0
+    #values [(u'20180001', u'201803', u'1200', u'100,100,100', u'60,60,60', u'1200', u'1300')]
+    flags = read_file("stu_money_info.txt")
+    if len(values) < 2:
+        return 0
+    i = -1
+    num = 15
+    sum = 0
+    for flag, value in flags:
+        i = i + 1
+        if value[0] == u"":
+            continue
+        if len(old_values) == 0:
+            sum = sum + str_to_sum(values[i])
+            out_put_list = out_put_result(values[i])
+        else:
+            sum = sum + str_to_sum(values[i]) - str_to_sum(old_values[i])
+            out_put_list = out_put_result(values[i], old_values[i])
+        if out_put_list == 0:
+            continue
+        out_put_list = [flag + "(" + out_put_list[0] + ")"] + out_put_list[1:]
+        row_html = row_html + row_html_tmp % tuple(out_put_list)
+    for j in range(0, num - i):
+        row_html = row_html + row_html_tmp % (u' ', u' ', u' ', u' ', u' ', u' ', u' ', u' ',u' ',u' ',u' ')
+    row_html_tmp = u"""
+        <tr>
+          <td colspan=4>合计(人民币)：%s 拾 %s 万 %s 仟 %s 佰 %s 拾 %s 元 %s 角 %s 分</td>
+          <td name="shiwan">%s</td>
+          <td name="wan">%s</td>
+          <td name="qian">%s</td>
+          <td name="bai">%s</td>
+          <td name="shi">%s</td>
+          <td name="yuan">%s</td>
+          <td name="jiao">%s</td>
+          <td name="fei">%s</td>
+          <td name="beizhu"><font size="4">%s</font></td>
+        </tr>
+"""
+    money_list = out_put_money_list(sum)
+    if sum >= 0:
+        beizhu = u"缴费"
+    else:
+        beizhu = u"退费"
+    money_list_ch = out_put_money_list_ch(money_list)
+    row_html = row_html + row_html_tmp % tuple(money_list_ch + money_list + [beizhu])
+    row_html_tmp = u"""
+      </table>
+      <table>
+        <tr>
+          <th width="30%" align="left">填票人：name</th>
+          <th width="30%" align="left">收款人：name</th>
+          <th width="40%" align="left">单位名称(盖章):</th>
+        </tr>
+      </table>
+    </body>
+"""
+    row_html = row_html + row_html_tmp.replace(u"name", query_current_user()[1])
+    blank_line = u"""
+    <br />
+    <br />
+    <br />
+    <hr />
+    <br />
+    <br />
+    <br />
+"""
+    body_html = body_html + row_html
+    end_html = u"""
+</html>
+"""
+    result_html = head_html + body_html + blank_line + body_html + end_html
+    write_file(number, result_html)
+    return result_html
+
+
+def write_file(filename, content):
+    import codecs
+    try:
+        f = codecs.open(os.path.join(os.getcwd(),"backup","%s.html" % filename), "w", "utf-8")
+        f.write(content)
+        f.close()
+    except Exception,e:
+        ERROR(traceback.format_exc())
+
+
+def print_html(html):
+    printer = QtGui.QPrinter()
+    textDocument = QtGui.QTextDocument()
+    textDocument.setHtml(html)
+    textDocument.print_(printer)
+
+
+def out_put_money_list_ch(result):
+    flag_dict = {u"1": u"壹", u"2":u"贰", u"3":u"叁", u"4":u"肆", u"5":u"伍", u"6":u"陆", u"7":u"柒", u"8":u"捌", u"9":u"玖",u"0":u"零",u"￥":u"零"}
+    result = [flag_dict[i] for i in result]
+    return result
+
+
+def out_put_term(str, old_str=u"0,0,0"):
+    term_info = read_file("money_term.txt")[0][1]
+    term_info = [i for i in term_info]
+    infos = str.split(",")
+    old_infos = old_str.split(",")
+    if len(infos) == 1:
+        if old_str == u"0,0,0":
+            old_str = u"0"
+        if float(str) > float(old_str):
+            term_info = [u"缴" + i for i in term_info]
+            return ",".join(term_info)
+        else:
+            term_info = [u"退"+ i for i in term_info]
+            return ",".join(term_info)
+    i = 0
+    tmp = []
+    for info in infos:
+        if float(old_infos[i]) > float(infos[i]):
+            tmp.append(u"退" + term_info[i])
+        if float(old_infos[i]) < float(infos[i]):
+            tmp.append(u"缴"+ term_info[i])
+        i = i + 1
+    return ",".join(tmp)
+
+
+def out_put_result(new_str="", old_str="0,0,0"):
+    money = str_to_sum(new_str) - str_to_sum(old_str)
+    if new_str == old_str:
+        return 0
+    f_beizhu = u" "
+    if money > 0:
+        f_beizhu = u"缴费"
+    if money < 0:
+        f_beizhu = u"退费"
+    return [out_put_term(new_str, old_str), str(round(money, 2))] + out_put_money_list(money) + [f_beizhu]
+
+
+def out_put_money_list(money):
+    num_i = 6
+    num_f = 2
+    list_value = []
+    money = abs(money)
+    money = round(money, num_f)
+    money_int = int(money)
+    money_float = int((money - money_int) * (10 ** num_f))
+    for i in range(1, num_f + 1):
+        tmp = money_float % 10
+        money_float = money_float / 10
+        list_value.append(tmp)
+    for i in range(1, num_i + 1):
+        tmp = money_int % 10
+        money_int = money_int / 10
+        list_value.append(tmp)
+    list_value.reverse()
+    result = []
+    flag = 0
+    for i in range(0, len(list_value)):
+        if i < (len(list_value) - 1) and list_value[i + 1] != 0 and flag == 0:
+            flag = 1
+            result.append(u"￥")
+        elif i == (len(list_value) - 1) and list_value[i] == 0 and flag == 0:
+            flag = 1
+            result.append(u"￥")
+        else:
+            result.append(str(list_value[i]))
+    return result
+
+
 def stu_addmoney_add(values=[]):
     DEBUG(u"Stu addmoney add, values: %s" % unicode(values))
     db_name = "stu_addmoney_info"
@@ -541,7 +908,7 @@ def stu_addmoney_add(values=[]):
                 else:
                     create_time = time_to_str(time.time())
             else:
-                f_status = u"未交费"
+                f_status = u"未缴费"
                 create_time = u"2000/01/01 00:00:00"
             new_list = [stu_id, stu_term, u"All", f_values[0], f_status, flag, create_time]
             if len(old_list) != 0:
@@ -561,7 +928,7 @@ def stu_addmoney_add(values=[]):
                     else:
                         create_time = time_to_str(time.time())
                 else:
-                    f_status = u"未交费"
+                    f_status = u"未缴费"
                     create_time = u"2000/01/01 00:00:00"
                 new_list = [stu_id, stu_term, f_value_flag, f_values[0], f_status, flag, create_time]
                 if len(old_list) != 0:
@@ -839,4 +1206,6 @@ if __name__ == '__main__':
     # print('宽：%d,高：%d' % (im.size[0], im.size[1]))
     # test = Sql("stu_money_info")
     # get_stu_infos([u"学号",u"姓名",u"联系电话",u"身份证件号码"], u"f")
-    print init_stu_term_info()
+    # print init_stu_term_info()
+    test = stu_addmoney_print([u'20180001', u'201803', u'1200', u'100,100,0', u'60,60,0', u'1200', u'1300'], [u'20180001', u'201803', u'1200', u'100,100,100', u'60,60,60', u'1200', u'1300'])
+    print_html(test)

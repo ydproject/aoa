@@ -173,21 +173,22 @@ class AddMoney(QtGui.QWidget):
             Sql("stu_money_pre").add([self.lineEdit0.text(), unicode(pre_end)])
         else:
             premoney = float(pre_info[0][1])
-            ask_info = showComfirmDialog(self, u"是否抵扣预收款？ %8.2f" % premoney)
-            if ask_info == 1:
-                premoney = 0.0
-            else:
-                pre_before = unicode(premoney)
-                if total >= premoney:
-                    pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
-                else:
-                    pre_end = unicode(premoney - total)
-                    pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
-                    premoney = total
-                if pre_status != 0:
-                    pre_end = pre_before
+            if premoney != 0:
+                ask_info = showComfirmDialog(self, u"是否抵扣预收款？ %8.2f" % premoney)
+                if ask_info == 1:
                     premoney = 0.0
-                    showWarnDialog(self, u"抵扣预收费失败！")
+
+            pre_before = unicode(premoney)
+            if total >= premoney:
+                pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
+            else:
+                pre_end = unicode(premoney - total)
+                pre_status = Sql("stu_money_pre").update([self.lineEdit0.text(), unicode(premoney)], [self.lineEdit0.text(), pre_end])
+                premoney = total
+            if pre_status != 0:
+                pre_end = pre_before
+                premoney = 0.0
+                showWarnDialog(self, u"抵扣预收费失败！")
 
         ask_info = showComfirmDialog(self, u"合计：%8.2f 元，抵扣预收费：%8.2f 元，需缴纳：%8.2f 元，确认缴费？" % (total, premoney, total - premoney))
         if ask_info == 1:
@@ -205,6 +206,7 @@ class AddMoney(QtGui.QWidget):
             ERROR(u"Add student money failed! user: %s, stu_id: %s" % (
             unicode(query_current_user()[1]), unicode(self.lineEdit0.text())))
             return 0
+        old_values =  Sql("stu_money_info").select({u"学号": self.lineEdit0.text(), u"学期": get_term()})
         status = Sql("stu_money_info").add(values)
         if status == 1:
             Sql("stu_money_pre").update([self.lineEdit0.text(), pre_end], [self.lineEdit0.text(), pre_before])
@@ -228,6 +230,16 @@ class AddMoney(QtGui.QWidget):
                 showWarnDialog(self, u"学籍信息中写入'已报到'信息失败，编辑学籍信息中手动输入！")
             INFO(u"Add student money success!user: %s, stu_id: %s, values: %s" % (
             unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(values)))
+            html = ""
+            if total != 0:
+                res = showComfirmDialog(self, u"是否打印收据？")
+                if res ==0:
+                    try:
+                        html = stu_addmoney_print(old_values, values)
+                        print_html(html)
+                    except Exception,e :
+                        showWarnDialog(self, u"无法打印收据，请手动处理！")
+                        ERROR(u"Print html failed: html:%s error %s" % (html, traceback.format_exc()))
 
             if self.stu_id == "":
                 self.reset()
