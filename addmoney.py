@@ -232,14 +232,14 @@ class AddMoney(QtGui.QWidget):
             unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(values)))
             html = ""
             if total != 0:
-                res = showComfirmDialog(self, u"是否打印收据？")
-                if res ==0:
-                    try:
-                        html = stu_addmoney_print(old_values, values)
+                try:
+                    html = stu_addmoney_print(old_values, values)
+                    res = showComfirmDialog(self, u"是否打印收据？")
+                    if res == 0:
                         print_html(html)
-                    except Exception,e :
-                        showWarnDialog(self, u"无法打印收据，请手动处理！")
-                        ERROR(u"Print html failed: html:%s error %s" % (html, traceback.format_exc()))
+                except Exception,e :
+                    showWarnDialog(self, u"无法打印收据，请手动处理！")
+                    ERROR(u"Print html failed: html:%s error %s" % (html, traceback.format_exc()))
 
             if self.stu_id == "":
                 self.reset()
