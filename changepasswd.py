@@ -86,7 +86,7 @@ class ChangePasswd(QtGui.QWidget):
         self.setWindowTitle(u'修改用户密码')
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.resize(235, 150)
-        self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
+        self.setWindowIcon(QtGui.QIcon(os.path.join(get_cwd(), 'icon', 'png_3.png')))
 
     def clears(self):
         for value in self.value_list:

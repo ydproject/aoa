@@ -96,7 +96,7 @@ class AddStudent(QtGui.QWidget):
         self.setWindowTitle(u'添加学生学籍信息')
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.resize(535, 700)
-        self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
+        self.setWindowIcon(QtGui.QIcon(os.path.join(get_cwd(), 'icon', 'png_3.png')))
 
     def clears(self):
         for value in self.value_list:

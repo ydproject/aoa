@@ -11,7 +11,7 @@ class MainWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         w, h = get_pic_size("icon/start.png")
         self.resize(w, h)
-        self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon/png_2.png')))
+        self.setWindowIcon(QtGui.QIcon(os.path.join(get_cwd(), 'icon/png_2.png')))
         # 学生信息菜单子菜单
         self.addstu = QtGui.QAction(u'学生报名', self)
         self.connect(self.addstu, QtCore.SIGNAL('triggered()'), self.adds)

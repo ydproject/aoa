@@ -74,14 +74,15 @@ class Refund(QtGui.QWidget):
             showWarnDialog(self, u"退费失败！")
         else:
             showMessageDialog(self, u"退费成功！")
-            res = showComfirmDialog(self, u"是否打印收据？")
-            if res ==0:
-                try:
-                    html = stu_addflowing_print(num)
+            html = u""
+            try:
+                html = stu_addflowing_print(num)
+                res = showComfirmDialog(self, u"是否打印收据？")
+                if res == 0:
                     print_html(html)
-                except Exception,e :
-                    showWarnDialog(self, u"无法打印收据，请手动处理！")
-                    ERROR(u"Print html failed: html:%s error %s" % (html, traceback.format_exc()))
+            except Exception,e :
+                showWarnDialog(self, u"无法打印收据，请手动处理！")
+                ERROR(u"Print html failed: html:%s error %s" % (html, traceback.format_exc()))
             self.faWindows.sels()
             self.close()
         return 0

@@ -11,6 +11,10 @@ from PIL import Image
 from log import INFO, ERROR, WARN, DEBUG
 
 
+def get_cwd():
+    return os.getcwd()
+
+
 def get_term():
     data = read_file("stu_term_info.txt")
     term = ""
@@ -110,7 +114,7 @@ def flag_to_str(f_list):
 
 
 def read_file(filename):
-    file_info = open(os.path.join(os.getcwd(), "config", filename))
+    file_info = open(os.path.join(get_cwd(), "config", filename))
     infos = []
     for line_info in file_info:
         items = line_info.strip().split(",")
@@ -524,6 +528,136 @@ def get_number():
     Sql("number").update_by_stuid(u"0", u"number", unicode(number))
     return unicode(number)
 
+
+def stu_addpre_print(stu_id, money):
+    stu_name = Sql().select_by_list([u"姓名"],{u"学号": stu_id})
+    if len(stu_name) == 0:
+        stu_name = stu_id
+    else:
+        stu_name = stu_name[0][0]
+    if money > 0:
+        flag = u"收预收费"
+        beizhu = u"收费"
+    else:
+        flag = u"退预收费"
+        beizhu = u"退费"
+
+    money = str(round(money, 2))
+    head_html = u"""
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+    <head>
+        <title>成都市双流区阳光幼儿园</title>
+    </head>
+"""
+    day_time = datetime.datetime.today()
+    body_html = u"""
+    <h1 align="center">成都市双流区阳光幼儿园预收费</h1>
+    <body>
+      <table>
+        <tr>
+          <th width="50%" align="left">客户名称：name</th>
+          <th width="10%" align="left"> year 年</th>
+          <th width="10%" align="left"> month 月</th>
+          <th width="10%" align="left"> day 日</th>
+          <th width="20%" align="left">NO: number </th>
+        </tr>
+      </table>
+      <table border="1" cellspacing="1" cellpadding="0">
+        <tr>
+          <th rowspan=2 width="45%"><font size="4">摘要</font></th>
+          <th rowspan=2 width="5%"><font size="4">单位</font></th>
+          <th rowspan=2 width="5%"><font size="4">数量</font></th>
+          <th rowspan=2 width="10%"><font size="4">单价</font></th>
+          <th colspan=8 width="30%"><font size="4">金额</font></th>
+          <th rowspan=2 width="5%"><font size="4">备注</font></th>
+        </tr>
+        <tr>
+          <th>十</th>
+          <th>万</th>
+          <th>千</th>
+          <th>百</th>
+          <th>十</th>
+          <th>元</th>
+          <th>角</th>
+          <th>分</th>
+        </tr>
+"""
+    number = get_number()
+    body_html = body_html.replace(u"year", str(day_time.year)).replace(u"month", str(day_time.month)).replace(u"day", str(
+        day_time.day)).replace(u"number", number).replace(u"name", stu_name)
+
+    row_html = u""
+
+    row_html_tmp = u"""
+       <tr>
+          <td name="zhaiyao" height="100"><font size="4">%s</font></td>
+          <td name="danwei" height="100"></td>
+          <td name="shuliang" height="100"></td>
+          <td name="danjia" height="100">%s</td>
+          <td name="shiwan" height="100">%s</td>
+          <td name="wan" height="100">%s</td>
+          <td name="qian" height="100">%s</td>
+          <td name="bai" height="100">%s</td>
+          <td name="shi" height="100">%s</td>
+          <td name="yuan" height="100">%s</td>
+          <td name="jiao" height="100">%s</td>
+          <td name="fei" height="100">%s</td>
+          <td name="beizhu" height="100">%s</td>
+        </tr>
+"""
+    out_put_list = out_put_money_list(float(money))
+    out_put_list = [flag, money] + out_put_list + [beizhu]
+    row_html = row_html + row_html_tmp % tuple(out_put_list)
+    for j in range(0, 14):
+        row_html = row_html + row_html_tmp % (u' ', u' ', u' ', u' ', u' ', u' ', u' ', u' ',u' ',u' ',u' ')
+    row_html_tmp = u"""
+        <tr>
+          <td colspan=4>合计(人民币)：%s 拾 %s 万 %s 仟 %s 佰 %s 拾 %s 元 %s 角 %s 分</td>
+          <td name="shiwan">%s</td>
+          <td name="wan">%s</td>
+          <td name="qian">%s</td>
+          <td name="bai">%s</td>
+          <td name="shi">%s</td>
+          <td name="yuan">%s</td>
+          <td name="jiao">%s</td>
+          <td name="fei">%s</td>
+          <td name="beizhu"><font size="4">%s</font></td>
+        </tr>
+"""
+    money_list = out_put_money_list(float(money))
+    money_list_ch = out_put_money_list_ch(money_list)
+    row_html = row_html + row_html_tmp % tuple(money_list_ch + money_list + [beizhu])
+    row_html_tmp = u"""
+      </table>
+      <table>
+        <tr>
+          <th width="30%" align="left">填票人：name</th>
+          <th width="30%" align="left">收款人：name</th>
+          <th width="40%" align="left">单位名称(盖章):</th>
+        </tr>
+      </table>
+    </body>
+"""
+    row_html = row_html + row_html_tmp.replace(u"name", query_current_user()[1])
+    blank_line = u"""
+    <br />
+    <br />
+    <br />
+    <hr />
+    <br />
+    <br />
+    <br />
+"""
+    body_html = body_html + row_html
+    end_html = u"""
+</html>
+"""
+    result_html = head_html + body_html + blank_line + body_html + end_html
+    write_file(number, result_html)
+    return result_html
+
+
 def stu_addflowing_print(num):
     flowing_info = Sql("flow_money_sel").select_by_list([u"学号", u"金额", u"备注"],{u"num": num})[0]
     stu_id = flowing_info[0]
@@ -648,6 +782,7 @@ def stu_addflowing_print(num):
     result_html = head_html + body_html + blank_line + body_html + end_html
     write_file(number, result_html)
     return result_html
+
 
 def stu_addmoney_print(old_values=[], values=[]):
     stu_id = values[0]
@@ -797,7 +932,7 @@ def stu_addmoney_print(old_values=[], values=[]):
 def write_file(filename, content):
     import codecs
     try:
-        f = codecs.open(os.path.join(os.getcwd(),"backup","%s.html" % str(filename)), "w", "utf-8")
+        f = codecs.open(os.path.join(get_cwd(),"backup","%s.html" % str(filename)), "w", "utf-8")
         f.write(content)
         f.close()
     except Exception,e:
@@ -1039,7 +1174,7 @@ def choose_dirname():
     root = Tkinter.Tk()
     root.withdraw()
     options = {}
-    options['initialdir'] = os.path.join(os.getcwd(), "download")
+    options['initialdir'] = os.path.join(get_cwd(), "download")
     dir_name = tkFileDialog.askdirectory(**options)
     DEBUG(u"Choose dirname,return: %s" % unicode(dir_name))
     return dir_name
@@ -1050,7 +1185,7 @@ def choose_filepath():
     root.withdraw()
     options = {}
     options['defaultextension'] = '.xls'
-    options['initialdir'] = os.path.join(os.getcwd(), "download")
+    options['initialdir'] = os.path.join(get_cwd(), "download")
     options['filetypes'] = [('Excel files', '*.xls'), ('all files', '.*')]
     filepath = tkFileDialog.askopenfilename(**options)
     DEBUG(u"Choose filepath,return: %s" % unicode(filepath))
@@ -1062,7 +1197,7 @@ def save_file():
     root.withdraw()
     options = {}
     options['defaultextension'] = '.xls'
-    options['initialdir'] = os.path.join(os.getcwd(), "download")
+    options['initialdir'] = os.path.join(get_cwd(), "download")
     options['initialfile'] = '%d.xls' % int(time.time())
     options['filetypes'] = [('all files', '.*'), ('Excel files', '*.xls')]
     filepath = tkFileDialog.asksaveasfilename(**options)
@@ -1207,5 +1342,6 @@ if __name__ == '__main__':
     # test = Sql("stu_money_info")
     # get_stu_infos([u"学号",u"姓名",u"联系电话",u"身份证件号码"], u"f")
     # print init_stu_term_info()
-    test = stu_addmoney_print([u'20180001', u'201803', u'1200', u'100,100,0', u'60,60,0', u'1200', u'1300'], [u'20180001', u'201803', u'1200', u'100,100,100', u'60,60,60', u'1200', u'1300'])
-    print_html(test)
+    # test = stu_addmoney_print([u'20180001', u'201803', u'1200', u'100,100,0', u'60,60,0', u'1200', u'1300'], [u'20180001', u'201803', u'1200', u'100,100,100', u'60,60,60', u'1200', u'1300'])
+    # print_html(test)
+    print get_cwd()

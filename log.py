@@ -4,8 +4,13 @@
 import logging
 import os
 
+
+def get_cwd():
+    return os.getcwd()
+
+
 def read_file(filename):
-    file_info = open(os.path.join(os.getcwd(), "config", filename))
+    file_info = open(os.path.join(get_cwd(), "config", filename))
     infos = []
     for line_info in file_info:
         items = line_info.strip().split(",")

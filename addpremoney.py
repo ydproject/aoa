@@ -104,7 +104,7 @@ class AddPreMoney(QtGui.QWidget):
         self.setWindowTitle(u'预收费信息')
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.resize(335, 156)
-        self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
+        self.setWindowIcon(QtGui.QIcon(os.path.join(get_cwd(), 'icon', 'png_3.png')))
 
     def clears(self):
         if self.stu_id == "":
@@ -152,6 +152,16 @@ class AddPreMoney(QtGui.QWidget):
             showMessageDialog(self, u"缴费成功！")
             INFO(u"Add student prepare money success!user: %s, stu_id: %s, values: %s" % (
                 unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(new_list)))
+            html = u""
+            if total != 0:
+                try:
+                    html = stu_addpre_print(self.lineEdit0.text(), total)
+                    res = showComfirmDialog(self, u"是否打印收据？")
+                    if res == 0:
+                        print_html(html)
+                except Exception, e:
+                    showWarnDialog(self, u"无法打印收据，请手动处理！")
+                    ERROR(u"Print html failed: html:%s error %s" % (html, traceback.format_exc()))
             if self.stu_id == "":
                 self.reset()
             else:

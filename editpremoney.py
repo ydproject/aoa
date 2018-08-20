@@ -95,7 +95,7 @@ class EditPreMoney(QtGui.QWidget):
         self.setWindowTitle(u'缴费信息')
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.resize(335, 156)
-        self.setWindowIcon(QtGui.QIcon(os.path.join(os.getcwd(), 'icon', 'png_3.png')))
+        self.setWindowIcon(QtGui.QIcon(os.path.join(get_cwd(), 'icon', 'png_3.png')))
 
     def clears(self):
         if self.stu_id == "":
