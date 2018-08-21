@@ -556,7 +556,7 @@ def stu_addpre_print(stu_id, money):
     <body>
       <table>
         <tr>
-          <th width="50%" align="left">客户名称：name</th>
+          <th width="50%" align="left">学生姓名：name</th>
           <th width="10%" align="left"> year 年</th>
           <th width="10%" align="left"> month 月</th>
           <th width="10%" align="left"> day 日</th>
@@ -681,7 +681,7 @@ def stu_addflowing_print(num):
     <body>
       <table>
         <tr>
-          <th width="50%" align="left">客户名称：name</th>
+          <th width="50%" align="left">学生姓名：name</th>
           <th width="10%" align="left"> year 年</th>
           <th width="10%" align="left"> month 月</th>
           <th width="10%" align="left"> day 日</th>
@@ -784,7 +784,7 @@ def stu_addflowing_print(num):
     return result_html
 
 
-def stu_addmoney_print(old_values=[], values=[]):
+def stu_addmoney_print(old_values=[], values=[], premoney=0):
     stu_id = values[0]
     stu_name = Sql().select_by_list([u"姓名"],{u"学号": stu_id})
     if len(stu_name) == 0:
@@ -804,7 +804,7 @@ def stu_addmoney_print(old_values=[], values=[]):
     <body>
       <table>
         <tr>
-          <th width="50%" align="left">客户名称：name</th>
+          <th width="50%" align="left">学生姓名：name</th>
           <th width="10%" align="left"> year 年</th>
           <th width="10%" align="left"> month 月</th>
           <th width="10%" align="left"> day 日</th>
@@ -876,6 +876,10 @@ def stu_addmoney_print(old_values=[], values=[]):
             continue
         out_put_list = [flag + "(" + out_put_list[0] + ")"] + out_put_list[1:]
         row_html = row_html + row_html_tmp % tuple(out_put_list)
+    if premoney != 0:
+        pre_list = [u"抵扣预收费用", str(-premoney)] + out_put_money_list(premoney) + [u"抵扣"]
+        row_html = row_html + row_html_tmp % tuple(pre_list)
+        i = i + 1
     for j in range(0, num - i):
         row_html = row_html + row_html_tmp % (u' ', u' ', u' ', u' ', u' ', u' ', u' ', u' ',u' ',u' ',u' ')
     row_html_tmp = u"""
@@ -892,6 +896,7 @@ def stu_addmoney_print(old_values=[], values=[]):
           <td name="beizhu"><font size="4">%s</font></td>
         </tr>
 """
+    sum = sum - premoney
     money_list = out_put_money_list(sum)
     if sum >= 0:
         beizhu = u"缴费"

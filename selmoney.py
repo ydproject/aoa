@@ -75,7 +75,7 @@ class SelMoney(QtGui.QWidget):
         QtCore.QObject.connect(selectButton, QtCore.SIGNAL("clicked()"), self.sels)
 
         editButton = QtGui.QPushButton(frame)
-        editButton.setText(u'编辑')
+        editButton.setText(u'退费')
         editButton.setFixedWidth(80)
         QtCore.QObject.connect(editButton, QtCore.SIGNAL("clicked()"), self.edit_money)
         if query_current_user()[2] != "Admin":
@@ -291,18 +291,18 @@ class SelMoney(QtGui.QWidget):
                 if status == 1:
                     stu_id_list.append(stu_id)
                     ERROR(u"Delete student money info failed!user: %s, stu_id: %s, stu_term: %s" % (
-                        unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(stu_term)))
+                        unicode(query_current_user()[1]), unicode(stu_id), unicode(stu_term)))
                 else:
                     INFO(u"Delete student money info success!user: %s, stu_id: %s, stu_term: %s" % (
-                        unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(stu_term)))
+                        unicode(query_current_user()[1]), unicode(stu_id), unicode(stu_term)))
                 status1 = delete_addmoney(stu_id, stu_term)
                 if status1 == 1:
                     stu_id_list1.append((stu_id, stu_term))
                     ERROR(u"Delete student money details info failed!user: %s, stu_id: %s, stu_term: %s" % (
-                        unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(stu_term)))
+                        unicode(query_current_user()[1]), unicode(stu_id), unicode(stu_term)))
                 else:
                     INFO(u"Delete student money details info success!user: %s, stu_id: %s, stu_term: %s" % (
-                        unicode(query_current_user()[1]), unicode(self.lineEdit0.text()), unicode(stu_term)))
+                        unicode(query_current_user()[1]), unicode(stu_id), unicode(stu_term)))
             i = i + 1
         if len(stu_id_list) == 0 and len(stu_id_list1) == 0:
             showMessageDialog(self, u"删除学生缴费信息成功！")

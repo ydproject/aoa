@@ -177,7 +177,7 @@ class SelStudent(QtGui.QWidget):
         else:
             ERROR(u"Import student info failed!user: %s, error_values: %s" % (
             unicode(query_current_user()[1]), unicode(error_list)))
-            showWarnDialog(self, u"导出Excel失败: %s" % ",".join(error_list))
+            showWarnDialog(self, u"导入Excel失败: %s" % ",".join(error_list))
 
     def export(self):
         file_name = save_file()

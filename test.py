@@ -62,15 +62,15 @@ def printHtml(printer):
     textDocument.print_(printer)
 
 
-# # html_text = stu_addmoney_print([u'20180001', u'201803', u'1200', u'100,0,100', u'60,60,0', u'0', u'1300'], [u'20180001', u'201803', u'1200', u'100,100,0', u'60,60,0', u'1200', u'0'])
+html_text = stu_addmoney_print([u'20180001', u'201803', u'1200', u'100,0,0', u'60,60,0', u'1200', u'0'], [u'20180001', u'201803', u'1200', u'100,100,0', u'60,60,0', u'1200', u'0'], 200)
 # html_text = stu_addpre_print("20180001", -100)
-# print html_text
+print html_text
 
 
-#
-# app = QApplication(sys.argv)
-# main = MainWindow()
-# main.show()
-# app.exec_()
 
-print os.path.abspath(__file__)
+app = QApplication(sys.argv)
+main = MainWindow()
+main.show()
+app.exec_()
+
+# print os.path.abspath(__file__)
