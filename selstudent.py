@@ -30,7 +30,7 @@ class SelStudent(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
-        self.tableWidget.setFixedWidth(1000)
+        self.tableWidget.setFixedWidth(1500)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         for row in stuInfo:
@@ -159,7 +159,7 @@ class SelStudent(QtGui.QWidget):
 
         self.setLayout(vlayout)
 
-        self.resize(1000, 1000)
+        self.resize(1500, 1000)
         self.setWindowTitle(u'查询学籍信息')
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))

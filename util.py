@@ -11,6 +11,9 @@ from PIL import Image
 from log import INFO, ERROR, WARN, DEBUG
 
 
+NULL_VALUE=u"0,0,0,0,0"
+
+
 def get_cwd():
     return os.getcwd()
 
@@ -591,7 +594,7 @@ def stu_addpre_print(stu_id, money):
 
     row_html_tmp = u"""
        <tr>
-          <td name="zhaiyao" height="100"><font size="4">%s</font></td>
+          <td name="zhaiyao" height="100">%s</td>
           <td name="danwei" height="100"></td>
           <td name="shuliang" height="100"></td>
           <td name="danjia" height="100">%s</td>
@@ -716,7 +719,7 @@ def stu_addflowing_print(num):
 
     row_html_tmp = u"""
        <tr>
-          <td name="zhaiyao" height="100"><font size="4">%s</font></td>
+          <td name="zhaiyao" height="100">%s</td>
           <td name="danwei" height="100"></td>
           <td name="shuliang" height="100"></td>
           <td name="danjia" height="100">%s</td>
@@ -839,7 +842,7 @@ def stu_addmoney_print(old_values=[], values=[], premoney=0):
 
     row_html_tmp = u"""
        <tr>
-          <td name="zhaiyao" height="100"><font size="4">%s</font></td>
+          <td name="zhaiyao" height="100">%s</td>
           <td name="danwei" height="100"></td>
           <td name="shuliang" height="100"></td>
           <td name="danjia" height="100">%s</td>
@@ -957,19 +960,19 @@ def out_put_money_list_ch(result):
     return result
 
 
-def out_put_term(str, old_str=u"0,0,0"):
+def out_put_term(str, old_str=NULL_VALUE):
     term_info = read_file("money_term.txt")[0][1]
     term_info = [i for i in term_info]
     infos = str.split(",")
     old_infos = old_str.split(",")
     if len(infos) == 1:
-        if old_str == u"0,0,0":
+        if old_str == NULL_VALUE:
             old_str = u"0"
         if float(str) > float(old_str):
-            term_info = [u"缴" + i for i in term_info]
+            term_info = [u"缴费"]
             return ",".join(term_info)
         else:
-            term_info = [u"退"+ i for i in term_info]
+            term_info = [u"退费"]
             return ",".join(term_info)
     i = 0
     tmp = []
@@ -982,7 +985,9 @@ def out_put_term(str, old_str=u"0,0,0"):
     return ",".join(tmp)
 
 
-def out_put_result(new_str="", old_str="0,0,0"):
+def out_put_result(new_str="0", old_str="0"):
+    if "," in new_str:
+        old_str = NULL_VALUE
     money = str_to_sum(new_str) - str_to_sum(old_str)
     if new_str == old_str:
         return 0
@@ -1243,14 +1248,30 @@ def read_file_dict(file_name):
     return {i:j[0] for i,j in read_file(file_name)}
 
 
+def str_to_date(str):
+    res = 0
+    try:
+        res = time.mktime(time.strptime(str, '%Y/%m/%d'))
+    except Exception, e:
+        ERROR(u"Str to time, failed: %s" % traceback.format_exc())
+    DEBUG(u"Str to time, str: %s, return: %s" % (unicode(str), unicode(res)))
+    return res
+
+
+def get_age(date_str):
+    try:
+        result = str(int((time.time() - str_to_date(date_str)) / (3600 * 24 * 360)))
+    except Exception, e:
+        result = "0"
+    return result
+
+
 def write_xls_by_sort(file_name, flag_list, infos, sort_list):
     status = 0
     DEBUG(u"Write xls,file_name: %s, flag_list: %s, infos: %s" % (unicode(file_name), unicode(flag_list), unicode(infos)))
     try:
         df = pd.DataFrame(data=infos, columns=flag_list)
-        df[u"班级编码"] = df[u"班级"].map(class_map)
-        df[u"出生所在地"] = df[u"籍贯"].map(address_map)
-        df[u"户口所在地"] = df[u"出生所在地"]
+        df[u"年龄"] = df[u"出生年月"].map(get_age)
         df_result = df[sort_list]
         df_result.to_excel(file_name, index=False)
     except Exception, e:
@@ -1349,4 +1370,4 @@ if __name__ == '__main__':
     # print init_stu_term_info()
     # test = stu_addmoney_print([u'20180001', u'201803', u'1200', u'100,100,0', u'60,60,0', u'1200', u'1300'], [u'20180001', u'201803', u'1200', u'100,100,100', u'60,60,60', u'1200', u'1300'])
     # print_html(test)
-    print get_cwd()
+    print get_age("1987/07/02")

@@ -30,7 +30,7 @@ class SelMoney(QtGui.QWidget):
         self.tableWidget.setRowCount(len(stuInfo))
         self.tableWidget.setColumnCount(len(self.tablelist))
         self.tableWidget.setColumnWidth(0, 30)
-        self.tableWidget.setFixedWidth(1100)
+        self.tableWidget.setFixedWidth(1700)
         self.tableWidget.setHorizontalHeaderLabels(self.tablelist)
         i = 0
         for row in stuInfo:
@@ -158,7 +158,7 @@ class SelMoney(QtGui.QWidget):
 
         self.setLayout(vlayout)
 
-        self.resize(1100, 1000)
+        self.resize(1700, 1000)
         self.setWindowTitle(u'缴费信息')
         self.setWindowFlags(QtCore.Qt.WindowMinimizeButtonHint)
         self.setWindowIcon(QtGui.QIcon('icon/png12.png'))

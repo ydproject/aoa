@@ -40,7 +40,8 @@ class AddMoney(QtGui.QWidget):
             self.money_list.append(money)
             if len(item_value) <= 1:
                 chkBoxItem = QtGui.QCheckBox(u"全部")
-                chkBoxItem.setCheckState(QtCore.Qt.Checked)
+                if item_info != u"试读":
+                    chkBoxItem.setCheckState(QtCore.Qt.Checked)
                 self.value_list.append(chkBoxItem)
             else:
                 chkBoxItem_list = []
