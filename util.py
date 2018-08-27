@@ -12,10 +12,21 @@ from log import INFO, ERROR, WARN, DEBUG
 
 
 NULL_VALUE=u"0,0,0,0,0"
+DATA_FORMAT = QtCore.QString("yyyy/MM/dd HH:mm:ss")
+DATA_INIT = QtCore.QString("yyyy-MM-dd")
 
 
 def get_cwd():
     return os.getcwd()
+
+
+def datetime_toString(dt):
+    return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+
+# 2.把字符串转成datetime
+def string_toDatetime(st):
+    return datetime.datetime.strptime(st, "%Y-%m-%d %H:%M:%S")
 
 
 def get_term():
@@ -1145,6 +1156,12 @@ def get_tommor_date():
     return res
 
 
+def get_current_year():
+    res = QtCore.QDate(datetime.datetime.now().year, 1, 1)
+    DEBUG(u"Get tommor date,return: %s" % unicode(res))
+    return res
+
+
 def get_text(object):
     res = unicode(object)
     if isinstance(object, QtGui.QDateEdit):
@@ -1160,7 +1177,7 @@ def get_text(object):
 def clear_text(object):
     if isinstance(object, QtGui.QDateEdit):
         if object.isEnabled():
-            object.setDate(QtCore.QDate(1999, 1, 1))
+            object.setDate(QtCore.QDate(datetime.datetime.now().year - 3, 1, 1))
         else:
             object.setDate(QtCore.QDate.currentDate())
     if isinstance(object, QtGui.QLineEdit):
@@ -1286,6 +1303,8 @@ def read_xls(file_name):
     res = []
     try:
         df = pd.read_excel(file_name,sheet_name=0)
+        df[u"联系电话"] = df[u"联系电话"].map(float_to_int_str)
+        df[u"年龄"] = df[u"年龄"].map(float_to_int_str)
         res = df.values.tolist()
     except Exception, e:
         ERROR(u"Read xls,failed: %s" % traceback.format_exc())
@@ -1299,6 +1318,17 @@ def clear_df_list(x):
         return u""
     else:
         return y
+
+
+def float_to_int_str(x):
+    y = unicode(x)
+    if y == u"nan":
+        return u""
+    try:
+        result = str(int(x))
+    except Exception, e:
+        result = str(x)
+    return result
 
 
 def update_stu(new_lists):

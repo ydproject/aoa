@@ -82,11 +82,14 @@ class SelectMoney(QtGui.QWidget):
                     edits.addItem(item)
             self.value_list_money.append(edits)
 
-        self.startTime = QtCore.QDateTime(QtCore.QDate(1999, 1, 1), QtCore.QTime(0, 0, 0))
-
+        self.startTime = QtCore.QDateTime(get_current_year(), QtCore.QTime(0, 0, 0))
         self.label_time = QtGui.QLabel(self.money_infos[-1][0])
         self.begin_time = QtGui.QDateTimeEdit(self.startTime)
+        self.begin_time.setDisplayFormat(DATA_FORMAT)
+        self.begin_time.setCalendarPopup(True)
         self.end_time = QtGui.QDateTimeEdit(QtCore.QDateTime(get_tommor_date(), QtCore.QTime(0, 0, 0)))
+        self.end_time.setDisplayFormat(DATA_FORMAT)
+        self.end_time.setCalendarPopup(True)
 
         # 按钮控件
         selectButton = QtGui.QPushButton(frame)

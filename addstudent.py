@@ -34,10 +34,14 @@ class AddStudent(QtGui.QWidget):
                 lineEdit = QtGui.QLineEdit()
                 lineEdit.setFixedWidth(150)
             elif str(item_value[0]) == "2":
-                lineEdit = QtGui.QDateEdit(QtCore.QDate(1999,1,1))
+                lineEdit = QtGui.QDateEdit(QtCore.QDate(2015, 1, 1))
+                lineEdit.setDisplayFormat(DATA_INIT)
+                lineEdit.setCalendarPopup(True)
                 lineEdit.setFixedWidth(150)
             elif str(item_value[0]) == "3":
                 lineEdit = QtGui.QDateEdit(QtCore.QDate.currentDate())
+                lineEdit.setDisplayFormat(DATA_INIT)
+                lineEdit.setCalendarPopup(True)
                 lineEdit.setFixedWidth(150)
                 lineEdit.setDisabled(True)
             else:
@@ -100,13 +104,7 @@ class AddStudent(QtGui.QWidget):
 
     def clears(self):
         for value in self.value_list:
-            if not isinstance(value, QtGui.QComboBox):
-                value.clear()
-            if isinstance(value, QtGui.QDateEdit):
-                if value.isEnabled():
-                    value.setDate(QtCore.QDate(1999,1,1))
-                else:
-                    value.setDate(QtCore.QDate.currentDate())
+            clear_text(value)
 
     def confirm(self):
         values = []

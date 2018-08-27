@@ -69,13 +69,17 @@ class FlowingMoney(QtGui.QWidget):
                     edits.addItem(item)
                 self.value_list.append(edits)
 
-        self.startTime = QtCore.QDateTime(QtCore.QDate(1999, 1, 1), QtCore.QTime(0, 0, 0))
+        self.startTime = QtCore.QDateTime(get_current_year(), QtCore.QTime(0, 0, 0))
         self.begin_label = QtGui.QLabel(u"开始时间:")
         self.begin_edit = QtGui.QDateTimeEdit(self.startTime)
-        self.begin_edit.setFixedWidth(160)
+        self.begin_edit.setFixedWidth(180)
+        self.begin_edit.setDisplayFormat(DATA_FORMAT)
+        self.begin_edit.setCalendarPopup(True)
         self.end_label = QtGui.QLabel(u"结束时间:")
         self.end_edit = QtGui.QDateTimeEdit(QtCore.QDateTime(get_tommor_date(), QtCore.QTime(0, 0, 0)))
-        self.end_edit.setFixedWidth(160)
+        self.end_edit.setFixedWidth(180)
+        self.end_edit.setDisplayFormat(DATA_FORMAT)
+        self.end_edit.setCalendarPopup(True)
 
         self.sum_info = QtGui.QLabel(u"收入：%12.2f，支出：%12.2f， 合计：%12.2f元" % (add_sum, add_sum-sum, sum))
 

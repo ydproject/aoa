@@ -32,12 +32,29 @@ class EditStudent(QtGui.QWidget):
                 lineEdit = QtGui.QLineEdit()
                 lineEdit.setText(stu_info[i])
                 lineEdit.setFixedWidth(150)
+            elif str(item_value[0]) == "2":
+                data_time = string_toDatetime(stu_info[i])
+                lineEdit = QtGui.QDateEdit(QtCore.QDate(data_time.year, data_time.month, data_time.day))
+                lineEdit.setDisplayFormat(DATA_INIT)
+                lineEdit.setCalendarPopup(True)
+                lineEdit.setFixedWidth(150)
+            elif str(item_value[0]) == "3":
+                lineEdit = QtGui.QDateEdit(QtCore.QDate.currentDate())
+                lineEdit.setDisplayFormat(DATA_INIT)
+                lineEdit.setCalendarPopup(True)
+                lineEdit.setFixedWidth(150)
+                lineEdit.setDisabled(True)
             else:
                 lineEdit = QtGui.QComboBox()
                 lineEdit.setFixedWidth(150)
                 for item in item_value:
                     lineEdit.addItem(item)
-                lineEdit.setEditText(stu_info[i])
+                # lineEdit.setEditText(stu_info[i])
+                try:
+                    box_id = item_value.index(stu_info[i])
+                    lineEdit.setCurrentIndex(box_id)
+                except Exception,e:
+                    pass
             i = i + 1
             self.value_list.append(lineEdit)
         pushButton_1 = QtGui.QPushButton(frame)
